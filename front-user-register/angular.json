@@ -3,9 +3,19 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "front-usuarios": {
+    "front-user-register": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:component": {
+          "standalone": false
+        },
+        "@schematics/angular:directive": {
+          "standalone": false
+        },
+        "@schematics/angular:pipe": {
+          "standalone": false
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
@@ -13,7 +23,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/front-usuarios",
+            "outputPath": "dist/front-user-register",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -59,10 +69,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "front-usuarios:build:production"
+              "buildTarget": "front-user-register:build:production"
             },
             "development": {
-              "buildTarget": "front-usuarios:build:development"
+              "buildTarget": "front-user-register:build:development"
             }
           },
           "defaultConfiguration": "development"

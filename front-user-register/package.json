@@ -1,5 +1,5 @@
 {
-  "name": "front-usuarios",
+  "name": "front-user-register",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
