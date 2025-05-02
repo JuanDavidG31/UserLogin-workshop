@@ -9,8 +9,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { UserComponent } from './user/user.component';
 import { TableComponent } from './table/table.component';
 
-import { FormsModule } from '@angular/forms';
-import { provideHttpClient } from '@angular/common/http';
+
 
 
 @NgModule({
