@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-user',
@@ -17,15 +18,14 @@ export class UserComponent {
   country = '';
   address = '';
 
-  menu = false;
 
-  constructor() {
+  constructor(private router: Router) {
   }
 
   iniciarSesion() {
     console.log('Usuario:', this.user);
     console.log('Contraseña:', this.password);
-    this.menu = !this.menu;
+    this.router.navigate(['/menu'])
     this.resetInpusLogin();
   }
 
