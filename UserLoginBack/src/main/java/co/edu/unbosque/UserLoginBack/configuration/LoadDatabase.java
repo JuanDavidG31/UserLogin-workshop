@@ -13,7 +13,6 @@ import co.edu.unbosque.UserLoginBack.model.User;
 import co.edu.unbosque.UserLoginBack.model.User.Role;
 import co.edu.unbosque.UserLoginBack.repository.UserRepository;
 
-
 @Configuration
 public class LoadDatabase {
 	private static final Logger log = LoggerFactory.getLogger(LoadDatabase.class);
@@ -27,7 +26,7 @@ public class LoadDatabase {
 				log.info("Admin already exists,  skipping admin creating  ...");
 			} else {
 
-				User user = new User( "admin", passwordEndcoder.encode("1234567890"), null, null,null, null);
+				User user = new User("admin", passwordEndcoder.encode("1234567890"), null, null, null, null);
 				user.setRole(Role.ADMIN);
 
 				userRepo.save(user);

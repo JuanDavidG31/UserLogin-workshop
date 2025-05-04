@@ -3,6 +3,11 @@
     <h5 class="text-center mb-4">Menú</h5>
     <ul class="nav nav-pills flex-column mb-auto" id="optionsMenu" role="tablist" aria-orientation="vertical">
       <li class="nav-item" role="presentation">
+        <button class="nav-link" id="logoutLink" type="button" role="tab" aria-controls="logoutSection" aria-selected="false" (click)="logout()">
+          <i class="bi bi-box-arrow-right me-2"></i> Log Out
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
         <button class="nav-link" id="mapLink" data-bs-toggle="pill" data-bs-target="#emptySection" type="button" role="tab" aria-controls="emptySection" aria-selected="false">
           <i class="bi bi-map me-2"></i> Mapa
         </button>
@@ -33,7 +38,7 @@
       <section class="tab-pane fade show active" id="profilePhotoSection" role="tabpanel" aria-labelledby="profilePhotoLink" tabindex="0">
         <div class="card shadow-sm p-4 mb-5">
           <h2 class="mb-4 text-center">Subir Foto de Perfil</h2>
-          <form id="uploadProfilePhotoForm" autocomplete="off" novalidate>
+          <form id="uploadProfilePhotoForm" autocomplete="off" novalidate (ngSubmit)="onSubmitProfilePhotoForm()">
             <div class="mb-3">
               <label for="profilePicture" class="form-label">Selecciona una imagen</label>
               <input
@@ -43,6 +48,7 @@
                 name="profilePicture"
                 accept="image/*"
                 required
+                (change)="onFileSelected($event)"
               />
             </div>
             <button type="submit" class="btn btn-primary w-100">Subir Foto</button>
@@ -53,7 +59,7 @@
       <section class="tab-pane fade" id="updateCredentialsSection" role="tabpanel" aria-labelledby="changeCredentialsLink" tabindex="0">
         <div class="card shadow-sm p-4">
           <h2 class="mb-4 text-center">Actualizar Usuario o Contraseña</h2>
-          <form id="updateUserForm" autocomplete="off" novalidate>
+          <form id="updateUserForm" autocomplete="off" novalidate (ngSubmit)="onSubmitUpdateUserForm()">
             <div class="mb-3">
               <label for="updateUsername" class="form-label">Nuevo usuario</label>
               <input
@@ -63,6 +69,7 @@
                 name="updateUsername"
                 placeholder="Nuevo usuario"
                 required
+                [(ngModel)]="updateUsername"
               />
             </div>
             <div class="mb-3">
@@ -75,10 +82,17 @@
                 placeholder="Nueva contraseña"
                 required
                 minlength="8"
+                [(ngModel)]="updatePassword"
               />
             </div>
             <button type="submit" class="btn btn-primary w-100">Actualizar</button>
           </form>
+          <div *ngIf="updateError" class="alert alert-danger mt-3">
+            Error al actualizar los datos. Por favor, inténtalo de nuevo.
+          </div>
+          <div *ngIf="updateSuccess" class="alert alert-success mt-3">
+            Datos actualizados correctamente.
+          </div>
         </div>
       </section>
 

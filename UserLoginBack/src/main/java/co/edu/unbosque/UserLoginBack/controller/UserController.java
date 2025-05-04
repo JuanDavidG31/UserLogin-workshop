@@ -1,6 +1,6 @@
 package co.edu.unbosque.UserLoginBack.controller;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,14 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.unbosque.UserLoginBack.dto.UserDTO;
 import co.edu.unbosque.UserLoginBack.service.UserService;
-import co.edu.unbosque.UserLoginBack.util.AESUtil;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 
 @RestController
 @RequestMapping("/user")
-@CrossOrigin(origins = { "http://localhost:8080", "http://localhost:8081" })
+@CrossOrigin(origins = { "http://localhost:8080", "http://localhost:8081", "http://localhost:8082" })
 @Transactional
 @Tag(name = "User Management", description = "Endpoints for managing users")
 @SecurityRequirement(name = "bearerAuth")
@@ -103,8 +101,8 @@ public class UserController {
 	}
 
 	@GetMapping("/showAllEncrypted")
-	public ResponseEntity<ArrayList<UserDTO>> showAllEncrypted() {
-		ArrayList<UserDTO> users = userServ.findAll();
+	public ResponseEntity<List<UserDTO>> showAllEncrypted() {
+		List<UserDTO> users = userServ.getAll();
 
 		if (users.isEmpty()) {
 			return new ResponseEntity<>(users, HttpStatus.NO_CONTENT);
@@ -125,18 +123,14 @@ public class UserController {
 		}
 	}
 
-	@DeleteMapping("/eliminar/user/{user}")
-	public ResponseEntity<String> eliminarPorUser(@PathVariable String user) {
-
-		if (!user.matches("^[a-zA-Z0-9_.]+$")) {
-			return new ResponseEntity<>(
-					"Nombre de usuario inválido. Solo se permiten letras, números, guión bajo y punto.",
-					HttpStatus.BAD_REQUEST);
+	@DeleteMapping("/deletebyuser")
+	ResponseEntity<String> deleteById(@RequestParam String name) {
+		int status = userServ.deleteByUsername(name);
+		if (status == 0) {
+			return new ResponseEntity<>("User deleted successfully", HttpStatus.ACCEPTED);
+		} else {
+			return new ResponseEntity<>("Error on delete", HttpStatus.NOT_FOUND);
 		}
-
-		int estado = userServ.deleteByUser(user);
-		return estado == 0 ? new ResponseEntity<>("Usuario eliminado con éxito", HttpStatus.OK)
-				: new ResponseEntity<>("No encontrado", HttpStatus.NOT_FOUND);
 	}
 
 }

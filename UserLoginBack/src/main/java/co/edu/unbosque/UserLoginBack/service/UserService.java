@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import co.edu.unbosque.UserLoginBack.dto.UserDTO;
 import co.edu.unbosque.UserLoginBack.model.User;
@@ -15,6 +16,7 @@ import co.edu.unbosque.UserLoginBack.repository.UserRepository;
 
 @Service
 public class UserService implements CRUDOperation<UserDTO> {
+
 	@Autowired
 	private UserRepository userRepo;
 
@@ -24,7 +26,22 @@ public class UserService implements CRUDOperation<UserDTO> {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
+	public UserService() {
+
+	}
+
 	@Override
+	public long count() {
+		return userRepo.count();
+	}
+
+	@Override
+	public boolean exist(Long id) {
+		return userRepo.existsById(id) ? true : false;
+	}
+
+	@Override
+	@Transactional
 	public int create(UserDTO data) {
 		User entity = modelMapper.map(data, User.class);
 		if (findUsernameAlreadyTaken(entity)) {
@@ -32,7 +49,7 @@ public class UserService implements CRUDOperation<UserDTO> {
 		} else {
 			// Hash the password before saving
 			entity.setPassword(passwordEncoder.encode(entity.getPassword()));
-			entity.setUser(passwordEncoder.encode(entity.getUser()));
+
 			userRepo.save(entity);
 			return 0;
 		}
@@ -40,7 +57,7 @@ public class UserService implements CRUDOperation<UserDTO> {
 
 	@Override
 	public List<UserDTO> getAll() {
-		List<User> entityList = (List<User>) userRepo.findAll();
+		List<User> entityList = userRepo.findAll();
 		List<UserDTO> dtoList = new ArrayList<>();
 		entityList.forEach((entity) -> {
 
@@ -51,25 +68,20 @@ public class UserService implements CRUDOperation<UserDTO> {
 		return dtoList;
 	}
 
-	public ArrayList<UserDTO> findAll() {
-		ArrayList<User> entityList = (ArrayList<User>) userRepo.findAll();
-		ArrayList<UserDTO> dtoList = new ArrayList<>();
-
-		entityList.forEach((entity) -> {
-
-			UserDTO dto = modelMapper.map(entity, UserDTO.class);
-			dtoList.add(dto);
-
-		});
-
-		return dtoList;
-	}
-
 	@Override
 	public int deleteById(Long id) {
 		Optional<User> found = userRepo.findById(id);
 		if (found.isPresent()) {
+			userRepo.delete(found.get());
+			return 0;
+		} else {
+			return 1;
+		}
+	}
 
+	public int deleteByUsername(String username) {
+		Optional<User> found = userRepo.findByUser(username);
+		if (found.isPresent()) {
 			userRepo.delete(found.get());
 			return 0;
 		} else {
@@ -100,18 +112,17 @@ public class UserService implements CRUDOperation<UserDTO> {
 		}
 	}
 
-	@Override
-	public long count() {
-		return userRepo.count();
-	}
-
-	@Override
-	public boolean exist(Long id) {
-		return userRepo.existsById(id) ? true : false;
+	public UserDTO getById(Long id) {
+		Optional<User> found = userRepo.findById(id);
+		if (found.isPresent()) {
+			return modelMapper.map(found.get(), UserDTO.class);
+		} else {
+			return null;
+		}
 	}
 
 	public boolean findUsernameAlreadyTaken(User newUser) {
-		Optional<User> found = userRepo.findByUser(newUser.getUser());
+		Optional<User> found = userRepo.findByUser(newUser.getUsername());
 		if (found.isPresent()) {
 			return true;
 		} else {
@@ -137,86 +148,6 @@ public class UserService implements CRUDOperation<UserDTO> {
 		}
 
 		return 1; // Invalid credentials
-	}
-
-	public int deleteByUser(String user) {
-		Optional<User> found = userRepo.findByUser(user);
-		if (found.isPresent()) {
-			userRepo.delete(found.get());
-			return 0;
-		} else {
-			return 1;
-		}
-	}
-
-	public UserDTO getById(Long id) {
-		Optional<User> found = userRepo.findById(id);
-		if (found.isPresent()) {
-			return modelMapper.map(found.get(), UserDTO.class);
-		} else {
-			return null;
-		}
-	}
-
-	public int update(UserDTO data) {
-		Optional<User> existingUser = userRepo.findByCedula(data.getCedula());
-
-		if (existingUser.isPresent()) {
-			User entity = existingUser.get();
-
-			if (data.getName() != null && !data.getName().isEmpty()) {
-				entity.setName(data.getName());
-			}
-
-			if (data.getPassword() != null && !data.getPassword().isEmpty()) {
-				entity.setPassword(data.getPassword());
-			}
-			if (data.getUser() != null && !data.getUser().isEmpty()) {
-				entity.setUser(data.getUser());
-			}
-			if (data.getCedula() != null && !data.getUser().isEmpty()) {
-				entity.setCedula(data.getCedula());
-			}
-			if (data.getCoutry() != null && !data.getCoutry().isEmpty()) {
-				entity.setCoutry(data.getCoutry());
-			}
-			if (data.getAddress() != null && !data.getAddress().isEmpty()) {
-				entity.setAddress(data.getAddress());
-			}
-
-			try {
-				userRepo.save(entity);
-				return 0;
-			} catch (Exception e) {
-				return 1;
-			}
-		} else {
-			return 1;
-		}
-	}
-
-	public UserRepository getUserRepo() {
-		return userRepo;
-	}
-
-	public void setUserRepo(UserRepository userRepo) {
-		this.userRepo = userRepo;
-	}
-
-	public ModelMapper getModelMapper() {
-		return modelMapper;
-	}
-
-	public void setModelMapper(ModelMapper modelMapper) {
-		this.modelMapper = modelMapper;
-	}
-
-	public PasswordEncoder getPasswordEncoder() {
-		return passwordEncoder;
-	}
-
-	public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
-		this.passwordEncoder = passwordEncoder;
 	}
 
 }

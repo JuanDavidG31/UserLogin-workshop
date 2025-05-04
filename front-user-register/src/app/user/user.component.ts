@@ -13,6 +13,8 @@ export class UserComponent {
   user = '';
   password = '';
   loginError = false;
+  registrationError = false;
+  registrationSuccess = false;
 
   name = '';
   cedula = '';
@@ -20,14 +22,13 @@ export class UserComponent {
   tPassword = '';
   country = '';
   address = '';
+  image:any;
 
   constructor(private router: Router, private authService: AuthService) { }
 
   iniciarSesion() {
-    console.log('Usuario:', this.user);
-    console.log('Contraseña:', this.password);
-
-    this.authService.login({ username: this.user, password: this.password })
+    this.loginError = false;
+    this.authService.login({ user: this.user, password: this.password })
       .subscribe(
         (success) => {
           if (success) {
@@ -45,13 +46,27 @@ export class UserComponent {
   }
 
   crearCuenta() {
-    console.log('Nombre Completo:', this.name);
-    console.log('Cédula:', this.cedula);
-    console.log('Usuario:', this.username);
-    console.log('Contraseña:', this.tPassword);
-    console.log('País:', this.country);
-    console.log('Dirección:', this.address);
-    this.resetInpusCreate();
+    this.registrationError = false;
+    this.registrationSuccess = false;
+    this.authService.register({
+      user: this.username,
+      password: this.tPassword,
+      name: this.name,
+      cedula: this.cedula,
+      country: this.country,
+      address: this.address
+    })
+      .subscribe(
+        (response) => {
+          console.log('Cuenta creada exitosamente:', response);
+          this.registrationSuccess = true;
+          this.resetInpusCreate();
+        },
+        (error: HttpErrorResponse) => {
+          console.error('Error al crear cuenta:', error);
+          this.registrationError = true;
+        }
+      );
   }
 
   resetInpusLogin() {
@@ -67,5 +82,6 @@ export class UserComponent {
     this.tPassword = '';
     this.country = '';
     this.address = '';
+    this.image = null;
   }
 }

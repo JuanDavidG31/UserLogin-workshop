@@ -7,6 +7,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +20,7 @@ import co.edu.unbosque.UserLoginBack.service.UserService;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = { "http://localhost:8080", "http://localhost:8081", "http://localhost:8082" })
 public class AuthController {
 
 	private final AuthenticationManager authenticationManager;
@@ -52,7 +55,7 @@ public class AuthController {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists");
 		}
 
-		// Encriptar todo
+		// Create new user
 		int result = userService.create(registerRequest);
 		if (result == 0) {
 			return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");

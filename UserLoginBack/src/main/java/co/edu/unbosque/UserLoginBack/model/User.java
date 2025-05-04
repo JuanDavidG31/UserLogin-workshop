@@ -18,7 +18,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "tuser")
+@Table(name = "useraccount")
 public class User implements UserDetails {
 	/**
 	 * 
@@ -195,9 +195,7 @@ public class User implements UserDetails {
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", user=" + user + ", password=" + password + ", name=" + name + ", cedula=" + cedula
-				+ ", coutry=" + coutry + ", address=" + address + ", role=" + role + ", accountNonExpired="
-				+ accountNonExpired + ", accountNonLocked=" + accountNonLocked + ", credentialsNonExpired="
-				+ credentialsNonExpired + ", enabled=" + enabled + "]";
+				+ ", coutry=" + coutry + ", address=" + address + "]";
 	}
 
 }

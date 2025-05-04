@@ -3,7 +3,7 @@ package co.edu.unbosque.UserLoginBack.dto;
 import java.util.Objects;
 
 public class UserDTO {
-	private long id;
+	private Long id;
 	private String user;
 	private String password;
 	private String name;
@@ -16,7 +16,6 @@ public class UserDTO {
 	}
 
 	public UserDTO(String user, String password, String name, String cedula, String coutry, String address) {
-		this();
 		this.user = user;
 		this.password = password;
 		this.name = name;
@@ -25,11 +24,11 @@ public class UserDTO {
 		this.address = address;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

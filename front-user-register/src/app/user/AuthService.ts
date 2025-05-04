@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -7,22 +7,37 @@ interface AuthResponse {
   token: string;
 }
 
+interface UpdateUserRequest {
+  username?: string;
+  password?: string;
+}
+
+interface RegisterRequest {
+  user: string;
+  password: string;
+  name: string;
+  cedula: string;
+  country: string;
+  address: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'TU_URL_DEL_BACKEND/login';
+  private apiUrlLogin = 'http://localhost:8081/auth/login';
+  private apiUrlRegister = 'http://localhost:8081/auth/register';
+  private apiUrlUpdate = 'http://localhost:8081/user/updatejson';
   private tokenKey = 'authToken';
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasToken());
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
   constructor(private http: HttpClient) {
     console.log('Initial isAuthenticated:', this.hasToken());
-
   }
 
   login(credentials: any): Observable<boolean> {
-    return this.http.post<AuthResponse>(this.apiUrl, credentials)
+    return this.http.post<AuthResponse>(this.apiUrlLogin, credentials)
       .pipe(
         map(response => {
           if (response && response.token) {
@@ -38,6 +53,31 @@ export class AuthService {
           }
         })
       );
+  }
+
+  register(userData: RegisterRequest): Observable<any> {
+    return this.http.post(this.apiUrlRegister, userData);
+  }
+
+  updateUser(userData: UpdateUserRequest): Observable<any> {
+    const token = this.getToken();
+    if (!token) {
+      console.error('No token available for update.');
+      return new Observable(observer => observer.error('No token available'));
+    }
+
+    const userId = this.getUserId();
+    if (!userId) {
+      console.error('No user ID found in the token.');
+      return new Observable(observer => observer.error('No user ID found in token'));
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+
+    return this.http.put(`${this.apiUrlUpdate}?id=${userId}`, userData, { headers });
   }
 
   logout(): void {
@@ -59,7 +99,7 @@ export class AuthService {
 
   private hasToken(): boolean {
     const has = !!localStorage.getItem(this.tokenKey);
-    console.log('Checking hasToken:', has); // Agrega esta línea
+    console.log('Checking hasToken:', has);
     return has;
   }
 
@@ -86,5 +126,4 @@ export class AuthService {
     const decodedToken = this.getDecodedToken();
     return decodedToken ? decodedToken.sub : null;
   }
-
 }
