@@ -1,1 +1,111 @@
-<p>user works!</p>
+<!-- Inicio sesion -->
+
+<div class="container d-flex flex-column justify-content-center align-items-center min-vh-100 bg-light px-3 py-4">
+  <div class="card shadow-sm p-4" style="max-width: 380px; width: 100%;">
+    <h2 class="text-center mb-4">Iniciar Sesión</h2>
+    <form id="loginForm" autocomplete="off" novalidate (ngSubmit)="iniciarSesion()">
+      <div class="mb-3">
+        <label for="loginUsername" class="form-label">Nombre de Usuario</label>
+        <input
+          type="text" class="form-control"
+          id="loginUsername" name="user"
+          placeholder="Introduce tu usuario" required autocomplete="username"
+          [(ngModel)]="user"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="loginPassword" class="form-label">Contraseña</label>
+        <input
+          type="password" class="form-control"
+          id="loginPassword" name="password" placeholder="Introduce tu contraseña" required autocomplete="current-password"
+          [(ngModel)]="password"
+        />
+      </div>
+      <button type="submit" class="btn btn-primary w-100">
+        Entrar
+      </button>
+    </form>
+    <button type="button" class="btn btn-link mt-3 p-0 w-auto mx-auto d-block" data-bs-toggle="modal" data-bs-target="#createAccountModal">
+      Crear Cuenta
+    </button>
+  </div>
+</div>
+
+<!-- Crear cuenta -->
+
+<div class="modal fade" id="createAccountModal" tabindex="-1" aria-labelledby="createAccountModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content rounded-4 shadow">
+      <div class="modal-header">
+        <h5 class="modal-title" id="createAccountModalLabel">Crear Nueva Cuenta</h5>
+        <button
+          type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"
+        ></button>
+      </div>
+      <form id="createAccountForm" autocomplete="off" novalidate (ngSubmit)="crearCuenta()">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="fullName" class="form-label">Nombre Completo</label>
+            <input
+              type="text" class="form-control" id="fullName"
+              name="fullName" placeholder="Tu nombre completo"
+              required autocomplete="name"
+              [(ngModel)]="name"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="cedula" class="form-label">Cédula</label>
+            <input
+              type="text" class="form-control"
+              id="cedula" name="cedula" placeholder="Número de cédula"
+              required pattern="\d+" title="Solo números"
+              [(ngModel)]="cedula"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="username" class="form-label">Nombre de Usuario</label>
+            <input
+              type="text" class="form-control"
+              id="username" name="username" placeholder="Nombre de usuario"
+              required autocomplete="username"
+              [(ngModel)]="username"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Contraseña</label>
+            <input
+              type="password" class="form-control"
+              id="password" name="tPassword" placeholder="Contraseña segura"
+              required autocomplete="new-password" minlength="8"
+              [(ngModel)]="tPassword" />
+          </div>
+          <div class="mb-3">
+            <label for="country" class="form-label">País de Origen</label>
+            <select
+              id="country"
+              name="country" class="form-select"
+              required [(ngModel)]="country"
+            >
+              <option value="" selected disabled>Pais</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="address" class="form-label">Dirección</label>
+            <input
+              type="text" class="form-control"
+              id="address" name="address" placeholder="Tu dirección"
+              required autocomplete="street-address"
+              [(ngModel)]="address"
+            />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="submit" class="btn btn-primary w-100">
+            Crear Cuenta
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
