@@ -17,7 +17,7 @@ export class UserComponent {
   country = '';
   address = '';
 
-  showMenu = false;
+  menu = false;
 
   constructor() {
   }
@@ -25,7 +25,7 @@ export class UserComponent {
   iniciarSesion() {
     console.log('Usuario:', this.user);
     console.log('Contraseña:', this.password);
-    this.showMenu = !this.showMenu;
+    this.menu = !this.menu;
     this.resetInpusLogin();
   }
 

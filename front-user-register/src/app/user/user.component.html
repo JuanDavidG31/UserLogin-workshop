@@ -3,7 +3,7 @@
 <div class="container d-flex flex-column justify-content-center align-items-center min-vh-100 bg-light px-3 py-4" >
   <div class="card shadow-sm p-4" style="max-width: 380px; width: 100%;">
     <h2 class="text-center mb-4">Iniciar Sesión</h2>
-    <form id="loginForm" autocomplete="off" novalidate (click)="iniciarSesion()">
+    <form id="loginForm" autocomplete="off" novalidate (ngSubmit)="iniciarSesion()">
       <div class="mb-3">
         <label for="loginUsername" class="form-label">Nombre de Usuario</label>
         <input
@@ -109,3 +109,4 @@
     </div>
   </div>
 </div>
+<app-menu *ngIf="menu"></app-menu>
