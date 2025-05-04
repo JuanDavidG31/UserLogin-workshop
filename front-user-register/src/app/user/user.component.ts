@@ -17,12 +17,15 @@ export class UserComponent {
   country = '';
   address = '';
 
+  showMenu = false;
+
   constructor() {
   }
 
   iniciarSesion() {
     console.log('Usuario:', this.user);
     console.log('Contraseña:', this.password);
+    this.showMenu = !this.showMenu;
     this.resetInpusLogin();
   }
 

@@ -1,1 +1,95 @@
-<p>menu works!</p>
+<div class="d-flex" style="min-height: 100vh;" *ngIf="showMenu">
+  <!-- Menú -->
+  <nav id="sidebar" class="d-flex flex-column bg-light border-end p-3" style="width: 250px;">
+    <h5 class="text-center mb-4">Menú</h5>
+    <ul class="nav nav-pills flex-column mb-auto" id="optionsMenu" role="tablist" aria-orientation="vertical">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="mapLink" data-bs-toggle="pill" data-bs-target="#emptySection" type="button" role="tab" aria-controls="emptySection" aria-selected="false">
+          <i class="bi bi-map me-2"></i> Mapa
+        </button>
+      </li>
+      <li class="nav-item mb-2" role="presentation">
+        <button class="nav-link active" id="profilePhotoLink" data-bs-toggle="pill" data-bs-target="#profilePhotoSection" type="button" role="tab" aria-controls="profilePhotoSection" aria-selected="true">
+          <i class="bi bi-camera-fill me-2"></i> Subir Foto de Perfil
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="changeCredentialsLink" data-bs-toggle="pill" data-bs-target="#updateCredentialsSection" type="button" role="tab" aria-controls="updateCredentialsSection" aria-selected="false">
+          <i class="bi bi-person-lock-fill me-2"></i> Actualizar Datos
+        </button>
+      </li>
+    </ul>
+  </nav>
+
+
+  <main id="content" class="flex-grow-1 d-flex justify-content-center align-items-start" style="overflow-y: auto; min-height: 100vh; position: relative; padding-top: 1rem;">
+
+    <!-- Foto perfil -->
+    <div class="position-absolute" style="top: 1rem; right: 1.5rem;">
+      <div class="rounded-circle border border-primary" style="width: 100px; height: 100px; overflow: hidden; background-color: #e9ecef;">
+        <img src="https://media.istockphoto.com/id/466167557/es/foto/reci%C3%A9n-nacido-chick.jpg?s=612x612&w=0&k=20&c=_JhGqWTApMy4Z66naKxZUDGtZL_y3rPFADRESOPlZmg=" alt="Foto de perfil" class="img-fluid" style="object-fit: cover;" />
+      </div>
+    </div>
+
+    <div class="tab-content" style="width: 550px; padding-top: 3rem;">
+      <!-- Subir Foto de Perfil -->
+      <section class="tab-pane fade show active" id="profilePhotoSection" role="tabpanel" aria-labelledby="profilePhotoLink" tabindex="0">
+        <div class="card shadow-sm p-4 mb-5">
+          <h2 class="mb-4 text-center">Subir Foto de Perfil</h2>
+          <form id="uploadProfilePhotoForm" autocomplete="off" novalidate>
+            <div class="mb-3">
+              <label for="profilePicture" class="form-label">Selecciona una imagen</label>
+              <input
+                type="file"
+                class="form-control"
+                id="profilePicture"
+                name="profilePicture"
+                accept="image/*"
+                required
+              />
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Subir Foto</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- Actualizar Usuario o Contraseña -->
+      <section class="tab-pane fade" id="updateCredentialsSection" role="tabpanel" aria-labelledby="changeCredentialsLink" tabindex="0">
+        <div class="card shadow-sm p-4">
+          <h2 class="mb-4 text-center">Actualizar Usuario o Contraseña</h2>
+          <form id="updateUserForm" autocomplete="off" novalidate>
+            <div class="mb-3">
+              <label for="updateUsername" class="form-label">Nuevo usuario</label>
+              <input
+                type="text"
+                class="form-control"
+                id="updateUsername"
+                name="updateUsername"
+                placeholder="Nuevo usuario"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="updatePassword" class="form-label">Nueva Contraseña</label>
+              <input
+                type="password"
+                class="form-control"
+                id="updatePassword"
+                name="updatePassword"
+                placeholder="Nueva contraseña"
+                required
+                minlength="8"
+              />
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Actualizar</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- Mapa -->
+      <section class="tab-pane fade" id="emptySection" role="tabpanel" aria-labelledby="mapLink" tabindex="0">
+
+      </section>
+    </div>
+  </main>
+</div>
