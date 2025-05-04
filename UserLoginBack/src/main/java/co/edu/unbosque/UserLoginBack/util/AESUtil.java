@@ -6,6 +6,9 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+
+import org.apache.commons.codec.digest.DigestUtils;
+
 import static org.apache.commons.codec.binary.Base64.decodeBase64;
 import static org.apache.commons.codec.binary.Base64.encodeBase64;
 import java.security.InvalidAlgorithmParameterException;
@@ -74,15 +77,35 @@ public class AESUtil {
 	}
 
 	public static String decrypt(String encrypted) {
-		String iv = "proyectUserLogind";
+		String iv = "proyectVirusdeaes";
 		String key = "keywhitsecuredlk";
 		return decrypt(key, iv, encrypted);
 	}
 
 	public static String encrypt(String plainText) {
-		String iv = "proyectUserLogind";
+		String iv = "proyectVirusdeaes";
 		String key = "keywhitsecuredlk";
 		return encrypt(key, iv, plainText);
+	}
+
+	public static String hashingToMD5(String content) {
+		return DigestUtils.md5Hex(content);
+	}
+
+	public static String hashingToSHA1(String content) {
+		return DigestUtils.sha1Hex(content);
+	}
+
+	public static String hashingToSHA256(String content) {
+		return DigestUtils.sha256Hex(content);
+	}
+
+	public static String hashingToSHA384(String content) {
+		return DigestUtils.sha384Hex(content);
+	}
+
+	public static String hashingToSHA512(String content) {
+		return DigestUtils.sha512Hex(content);
 	}
 
 }
