@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import co.edu.unbosque.UserLoginBack.dto.UserDTO;
 import co.edu.unbosque.UserLoginBack.security.JwtUtil;
 import co.edu.unbosque.UserLoginBack.service.UserService;
+import co.edu.unbosque.UserLoginBack.util.AESUtil;
 
 @RestController
 @RequestMapping("/auth")
@@ -55,7 +56,11 @@ public class AuthController {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists");
 		}
 
-		// Create new user
+		registerRequest.setName(AESUtil.encrypt(registerRequest.getName()));
+		registerRequest.setCedula(AESUtil.encrypt(registerRequest.getCedula()));
+		registerRequest.setCoutry(AESUtil.encrypt(registerRequest.getCoutry()));
+		registerRequest.setAddress(AESUtil.encrypt(registerRequest.getAddress()));
+
 		int result = userService.create(registerRequest);
 		if (result == 0) {
 			return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
