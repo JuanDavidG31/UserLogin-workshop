@@ -1,4 +1,4 @@
-package co.edu.unbosque.UserLoginBack.repository;
+package co.edu.unbosque.UserLoginBack.service;
 
 import java.util.List;
 

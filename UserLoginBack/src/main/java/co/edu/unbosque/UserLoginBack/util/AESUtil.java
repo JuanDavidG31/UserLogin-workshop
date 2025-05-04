@@ -77,7 +77,7 @@ public class AESUtil {
 	}
 
 	public static String decrypt(String encrypted) {
-		String iv = "proyectVirusdeaes";
+		String iv = "proyectUserdeaesk";
 		String key = "keywhitsecuredlk";
 		return decrypt(key, iv, encrypted);
 	}

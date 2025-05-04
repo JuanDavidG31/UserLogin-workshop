@@ -21,19 +21,20 @@ import co.edu.unbosque.UserLoginBack.dto.UserDTO;
 import co.edu.unbosque.UserLoginBack.service.UserService;
 import co.edu.unbosque.UserLoginBack.util.AESUtil;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 
 @RestController
 @RequestMapping("/user")
 @CrossOrigin(origins = { "http://localhost:8080", "http://localhost:8081" })
 @Transactional
+@Tag(name = "User Management", description = "Endpoints for managing users")
 @SecurityRequirement(name = "bearerAuth")
 public class UserController {
 	@Autowired
 	private UserService userServ;
 
 	public UserController() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@PutMapping(path = "/updatejson", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -101,147 +102,14 @@ public class UserController {
 		}
 	}
 
-	@PostMapping(path = "/createjson", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> crearConJson(@RequestBody UserDTO nuevo) {
-
-		if (!nuevo.getUser().matches("^[a-zA-Z0-9_.]+$")) {
-			return new ResponseEntity<>(
-					"Nombre de usuario inválido. Solo se permiten letras, números, guión bajo y punto.",
-					HttpStatus.BAD_REQUEST);
-		}
-		if (!isPasswordSecure(nuevo.getPassword())) {
-			return new ResponseEntity<>(
-					"La contraseña no es segura. Debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un símbolo.",
-					HttpStatus.BAD_REQUEST);
-		}
-
-		UserDTO newUser = nuevo;
-
-		String name = newUser.getName();
-		String address = newUser.getAddress();
-
-		if (!newUser.getUser().isBlank()) {
-
-			newUser.setUser(AESUtil.hashingToSHA256(newUser.getUser()));
-
-		}
-
-		if (!newUser.getPassword().isBlank()) {
-			newUser.setPassword(AESUtil.hashingToSHA256(newUser.getPassword()));
-		}
-
-		if (!newUser.getCedula().isBlank()) {
-
-			newUser.setCedula(AESUtil.encrypt(newUser.getCedula()));
-		}
-
-		if (!name.isBlank()) {
-			name = AESUtil.encrypt(name);
-			newUser.setName(name);
-
-		}
-		if (!address.isBlank()) {
-
-			address = AESUtil.encrypt(address);
-			newUser.setAddress(address);
-		}
-		if (!newUser.getCoutry().isBlank()) {
-			
-			newUser.setCoutry(AESUtil.encrypt(newUser.getCoutry()));
-
-		}
-
-		int status = userServ.create(newUser);
-
-		if (status == 0) {
-			return new ResponseEntity<>("Usuario creado con éxito", HttpStatus.CREATED);
-		} else {
-			return new ResponseEntity<>("Error al crear el Usuario", HttpStatus.NOT_ACCEPTABLE);
-		}
-
-	}
-
-	private boolean isPasswordSecure(String password) {
-		if (password == null || password.length() < 8) {
-			return false;
-		}
-		boolean hasUpper = password.matches(".*[A-Z].*");
-		boolean hasLower = password.matches(".*[a-z].*");
-		boolean hasDigit = password.matches(".*\\d.*");
-		boolean hasSpecial = password.matches(".*[!@#$%^&*(),.?\":{}|_].*");
-		return hasUpper && hasLower && hasDigit && hasSpecial;
-	}
-
-	@GetMapping("/verifyPassword")
-	public ResponseEntity<Boolean> verifyPassword(@RequestParam String password, @RequestParam String user) {
-		String tUser = AESUtil.hashingToSHA256(user);
-		String password1 = AESUtil.hashingToSHA256(password);
-		ArrayList<UserDTO> users = userServ.findAll();
-
-		for (UserDTO u : users) {
-
-			if (password1.equals(u.getPassword())) {
-
-				if (tUser.equals(u.getUser())) {
-
-					return new ResponseEntity<>(true, HttpStatus.FOUND);
-
-				}
-
-			}
-		}
-
-		return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
-
-	}
-
-	/*
-	 * @GetMapping("/showAllEncrypted") public ResponseEntity<ArrayList<UserDTO>>
-	 * showAllEncrypted() { ArrayList<UserDTO> users = userServ.findAll();
-	 * 
-	 * if (users.isEmpty()) { return new ResponseEntity<>(users,
-	 * HttpStatus.NO_CONTENT); } else { return new ResponseEntity<>(users,
-	 * HttpStatus.ACCEPTED); } }
-	 */
-
-	// @Hidden
-	@GetMapping("/showAll")
-	public ResponseEntity<ArrayList<UserDTO>> showAll() {
+	@GetMapping("/showAllEncrypted")
+	public ResponseEntity<ArrayList<UserDTO>> showAllEncrypted() {
 		ArrayList<UserDTO> users = userServ.findAll();
 
 		if (users.isEmpty()) {
 			return new ResponseEntity<>(users, HttpStatus.NO_CONTENT);
 		} else {
-			ArrayList<UserDTO> decryptedUsers = new ArrayList<>();
-
-			for (UserDTO user : users) {
-				UserDTO decryptedUser = new UserDTO();
-				decryptedUser.setId(user.getId());
-				decryptedUser.setUser(user.getUser());
-				decryptedUser.setPassword(user.getPassword());
-				
-				decryptedUser.setCedula(user.getCedula());
-
-//				try {
-//					decryptedUser.setName(AESUtil.decrypt(user.getName()));
-//				} catch (Exception e) {
-//					decryptedUser.setName(user.getName());
-//				}
-//				try {
-//					decryptedUser.setGmail(AESUtil.decrypt(user.getGmail()));
-//				} catch (Exception e) {
-//					decryptedUser.setGmail(user.getGmail());
-//				}
-//				try {
-//					decryptedUser.setCode(AESUtil.decrypt(user.getCode()));
-//				} catch (Exception e) {
-//					decryptedUser.setCode(user.getCode());
-//				}
-
-				decryptedUsers.add(decryptedUser);
-			}
-
-			return new ResponseEntity<>(decryptedUsers, HttpStatus.ACCEPTED);
+			return new ResponseEntity<>(users, HttpStatus.ACCEPTED);
 		}
 	}
 
@@ -269,57 +137,6 @@ public class UserController {
 		int estado = userServ.deleteByUser(user);
 		return estado == 0 ? new ResponseEntity<>("Usuario eliminado con éxito", HttpStatus.OK)
 				: new ResponseEntity<>("No encontrado", HttpStatus.NOT_FOUND);
-	}
-
-	@PutMapping("/actualizarjson")
-	public ResponseEntity<String> actualizar(@RequestBody UserDTO nuevo) {
-
-		UserDTO userUpdate = nuevo;
-
-		String name = userUpdate.getName();
-		String user = userUpdate.getUser();
-
-		if (!userUpdate.getUser().isEmpty()) {
-			if (!nuevo.getUser().matches("^[a-zA-Z0-9_.]+$")) {
-				return new ResponseEntity<>(
-						"Nombre de usuario inválido. Solo se permiten letras, números, guión bajo y punto.",
-						HttpStatus.BAD_REQUEST);
-			}
-			userUpdate.setUser(AESUtil.hashingToSHA256(userUpdate.getUser()));
-
-		}
-
-		if (!userUpdate.getPassword().isEmpty()) {
-			if (!isPasswordSecure(nuevo.getPassword())) {
-				return new ResponseEntity<>(
-						"La contraseña no es segura. Debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un símbolo.",
-						HttpStatus.BAD_REQUEST);
-			}
-			userUpdate.setPassword(AESUtil.hashingToSHA256(userUpdate.getPassword()));
-		}
-		if (!name.isEmpty()) {
-			name = AESUtil.encrypt(name);
-			userUpdate.setName(name);
-
-		}
-
-		if (!userUpdate.getCedula().isEmpty()) {
-
-			userUpdate.setCedula(AESUtil.encrypt(userUpdate.getCedula()));
-		}
-
-		if (!user.isEmpty()) {
-
-			user = AESUtil.encrypt(user);
-			userUpdate.setUser(user);
-		}
-
-		int estado = userServ.update(userUpdate);
-		if (estado == 0) {
-			return new ResponseEntity<>("Usuario actualizado con éxito", HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>("Error al actualizar el usuario", HttpStatus.NOT_FOUND);
-		}
 	}
 
 }

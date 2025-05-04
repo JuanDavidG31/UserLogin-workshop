@@ -7,36 +7,36 @@ import java.util.Optional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import co.edu.unbosque.UserLoginBack.dto.UserDTO;
 import co.edu.unbosque.UserLoginBack.model.User;
-import co.edu.unbosque.UserLoginBack.repository.CRUDOperation;
 import co.edu.unbosque.UserLoginBack.repository.UserRepository;
 
+@Service
 public class UserService implements CRUDOperation<UserDTO> {
-@Autowired
-private UserRepository userRepo;
+	@Autowired
+	private UserRepository userRepo;
 
-@Autowired
-private ModelMapper modelMapper;
+	@Autowired
+	private ModelMapper modelMapper;
 
-@Autowired
-private PasswordEncoder passwordEncoder;
-	
-	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
 	@Override
 	public int create(UserDTO data) {
-	User entity = modelMapper.map(data, User.class);
-	if (findUsernameAlreadyTaken(entity)) {
-		return 1;
-	} else {
-		// Hash the password before saving
-		entity.setPassword(passwordEncoder.encode(entity.getPassword()));
-		entity.setUser(passwordEncoder.encode(entity.getUser()));
-		userRepo.save(entity);
-		return 0;
+		User entity = modelMapper.map(data, User.class);
+		if (findUsernameAlreadyTaken(entity)) {
+			return 1;
+		} else {
+			// Hash the password before saving
+			entity.setPassword(passwordEncoder.encode(entity.getPassword()));
+			entity.setUser(passwordEncoder.encode(entity.getUser()));
+			userRepo.save(entity);
+			return 0;
+		}
 	}
-}
 
 	@Override
 	public List<UserDTO> getAll() {
@@ -46,6 +46,20 @@ private PasswordEncoder passwordEncoder;
 
 			UserDTO dto = modelMapper.map(entity, UserDTO.class);
 			dtoList.add(dto);
+		});
+
+		return dtoList;
+	}
+
+	public ArrayList<UserDTO> findAll() {
+		ArrayList<User> entityList = (ArrayList<User>) userRepo.findAll();
+		ArrayList<UserDTO> dtoList = new ArrayList<>();
+
+		entityList.forEach((entity) -> {
+
+			UserDTO dto = modelMapper.map(entity, UserDTO.class);
+			dtoList.add(dto);
+
 		});
 
 		return dtoList;
@@ -95,6 +109,7 @@ private PasswordEncoder passwordEncoder;
 	public boolean exist(Long id) {
 		return userRepo.existsById(id) ? true : false;
 	}
+
 	public boolean findUsernameAlreadyTaken(User newUser) {
 		Optional<User> found = userRepo.findByUser(newUser.getUser());
 		if (found.isPresent()) {
@@ -123,6 +138,7 @@ private PasswordEncoder passwordEncoder;
 
 		return 1; // Invalid credentials
 	}
+
 	public int deleteByUser(String user) {
 		Optional<User> found = userRepo.findByUser(user);
 		if (found.isPresent()) {
@@ -132,6 +148,7 @@ private PasswordEncoder passwordEncoder;
 			return 1;
 		}
 	}
+
 	public UserDTO getById(Long id) {
 		Optional<User> found = userRepo.findById(id);
 		if (found.isPresent()) {
@@ -140,6 +157,7 @@ private PasswordEncoder passwordEncoder;
 			return null;
 		}
 	}
+
 	public int update(UserDTO data) {
 		Optional<User> existingUser = userRepo.findByCedula(data.getCedula());
 
@@ -156,7 +174,7 @@ private PasswordEncoder passwordEncoder;
 			if (data.getUser() != null && !data.getUser().isEmpty()) {
 				entity.setUser(data.getUser());
 			}
-			if (data.getCedula()!= null && !data.getUser().isEmpty()) {
+			if (data.getCedula() != null && !data.getUser().isEmpty()) {
 				entity.setCedula(data.getCedula());
 			}
 			if (data.getCoutry() != null && !data.getCoutry().isEmpty()) {
@@ -165,7 +183,7 @@ private PasswordEncoder passwordEncoder;
 			if (data.getAddress() != null && !data.getAddress().isEmpty()) {
 				entity.setAddress(data.getAddress());
 			}
-			
+
 			try {
 				userRepo.save(entity);
 				return 0;
@@ -199,20 +217,6 @@ private PasswordEncoder passwordEncoder;
 
 	public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
 		this.passwordEncoder = passwordEncoder;
-	}
-
-		public ArrayList<UserDTO> findAll() {
-		ArrayList<User> entityList = (ArrayList<User>) userRepo.findAll();
-		ArrayList<UserDTO> dtoList = new ArrayList<>();
-
-		entityList.forEach((entity) -> {
-
-			UserDTO dto = modelMapper.map(entity, UserDTO.class);
-			dtoList.add(dto);
-
-		});
-
-		return dtoList;
 	}
 
 }
