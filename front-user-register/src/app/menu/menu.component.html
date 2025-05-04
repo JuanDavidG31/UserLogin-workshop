@@ -1,6 +1,5 @@
-<div class="d-flex" style="min-height: 100vh;" >
-  <!-- Menú -->
-  <nav id="sidebar" class="d-flex flex-column bg-light border-end p-3" style="width: 250px;">
+<div class="d-flex">
+  <nav id="sidebar" class="d-flex flex-column bg-light border-end p-3">
     <h5 class="text-center mb-4">Menú</h5>
     <ul class="nav nav-pills flex-column mb-auto" id="optionsMenu" role="tablist" aria-orientation="vertical">
       <li class="nav-item" role="presentation">
@@ -22,17 +21,15 @@
   </nav>
 
 
-  <main id="content" class="flex-grow-1 d-flex justify-content-center align-items-start" style="overflow-y: auto; min-height: 100vh; position: relative; padding-top: 1rem;">
+  <main id="content" class="flex-grow-1 d-flex justify-content-center align-items-start">
 
-    <!-- Foto perfil -->
-    <div class="position-absolute" style="top: 1rem; right: 1.5rem;">
-      <div class="rounded-circle border border-primary" style="width: 100px; height: 100px; overflow: hidden; background-color: #e9ecef;">
-        <img src="https://media.istockphoto.com/id/466167557/es/foto/reci%C3%A9n-nacido-chick.jpg?s=612x612&w=0&k=20&c=_JhGqWTApMy4Z66naKxZUDGtZL_y3rPFADRESOPlZmg=" alt="Foto de perfil" class="img-fluid" style="object-fit: cover;" />
+    <div class="position-absolute profile-photo-container">
+      <div class="rounded-circle border border-primary overflow-hidden">
+        <img src="https://media.istockphoto.com/id/466167557/es/foto/reci%C3%A9n-nacido-chick.jpg?s=612x612&w=0&k=20&c=_JhGqWTApMy4Z66naKxZUDGtZL_y3rPFADRESOPlZmg=" alt="Foto de perfil" class="img-fluid" />
       </div>
     </div>
 
-    <div class="tab-content" style="width: 550px; padding-top: 3rem;">
-      <!-- Subir Foto de Perfil -->
+    <div class="tab-content">
       <section class="tab-pane fade show active" id="profilePhotoSection" role="tabpanel" aria-labelledby="profilePhotoLink" tabindex="0">
         <div class="card shadow-sm p-4 mb-5">
           <h2 class="mb-4 text-center">Subir Foto de Perfil</h2>
@@ -53,7 +50,6 @@
         </div>
       </section>
 
-      <!-- Actualizar Usuario o Contraseña -->
       <section class="tab-pane fade" id="updateCredentialsSection" role="tabpanel" aria-labelledby="changeCredentialsLink" tabindex="0">
         <div class="card shadow-sm p-4">
           <h2 class="mb-4 text-center">Actualizar Usuario o Contraseña</h2>
@@ -86,7 +82,6 @@
         </div>
       </section>
 
-      <!-- Mapa -->
       <section class="tab-pane fade" id="emptySection" role="tabpanel" aria-labelledby="mapLink" tabindex="0">
 
       </section>
