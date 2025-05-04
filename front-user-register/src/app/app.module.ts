@@ -10,8 +10,10 @@ import { UserComponent } from './user/user.component';
 import { TableComponent } from './table/table.component';
 import { MapaComponent } from './mapa/mapa.component';
 import { MenuComponent } from './menu/menu.component';
+import {HTTP_INTERCEPTORS } from '@angular/common/http';
 
-
+import { AuthService} from './user/AuthService';
+import { AuthInterceptor } from './user/AuthInterceptor';
 
 
 @NgModule({
@@ -20,14 +22,23 @@ import { MenuComponent } from './menu/menu.component';
     UserComponent,
     TableComponent,
     MapaComponent,
-    MenuComponent
+    MenuComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule
   ],
-  providers: [provideHttpClient()],
+  providers: [
+    provideHttpClient(),
+    AuthService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

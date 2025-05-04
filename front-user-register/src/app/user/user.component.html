@@ -22,6 +22,9 @@
       <button type="submit" class="btn btn-primary w-100">
         Entrar
       </button>
+      <div *ngIf="loginError" style="color: red;">
+        Error al iniciar sesión. Por favor, verifica tus credenciales.
+      </div>
     </form>
     <button type="button" class="btn btn-link mt-3 p-0 w-auto mx-auto d-block" data-bs-toggle="modal" data-bs-target="#createAccountModal">
       Crear Cuenta

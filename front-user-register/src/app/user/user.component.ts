@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
-import {Router} from '@angular/router';
+import { Router } from '@angular/router';
+import { AuthService} from './AuthService';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-user',
@@ -10,6 +12,7 @@ import {Router} from '@angular/router';
 export class UserComponent {
   user = '';
   password = '';
+  loginError = false;
 
   name = '';
   cedula = '';
@@ -18,15 +21,27 @@ export class UserComponent {
   country = '';
   address = '';
 
-
-  constructor(private router: Router) {
-  }
+  constructor(private router: Router, private authService: AuthService) { }
 
   iniciarSesion() {
     console.log('Usuario:', this.user);
     console.log('Contraseña:', this.password);
-    this.router.navigate(['/menu'])
-    this.resetInpusLogin();
+
+    this.authService.login({ username: this.user, password: this.password })
+      .subscribe(
+        (success) => {
+          if (success) {
+            this.router.navigate(['/menu']);
+            this.resetInpusLogin();
+          } else {
+            this.loginError = true;
+          }
+        },
+        (error: HttpErrorResponse) => {
+          console.error('Error al iniciar sesión:', error);
+          this.loginError = true;
+        }
+      );
   }
 
   crearCuenta() {
@@ -42,6 +57,7 @@ export class UserComponent {
   resetInpusLogin() {
     this.user = '';
     this.password = '';
+    this.loginError = false;
   }
 
   resetInpusCreate() {
