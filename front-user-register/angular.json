@@ -75,7 +75,10 @@
               "buildTarget": "front-user-register:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "options" : {
+          "port": 8082
+        }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n"
