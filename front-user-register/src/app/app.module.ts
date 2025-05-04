@@ -8,6 +8,8 @@ import { provideHttpClient } from '@angular/common/http';
 
 import { UserComponent } from './user/user.component';
 import { TableComponent } from './table/table.component';
+import { MapaComponent } from './mapa/mapa.component';
+import { MenuComponent } from './menu/menu.component';
 
 
 
@@ -16,7 +18,9 @@ import { TableComponent } from './table/table.component';
   declarations: [
     AppComponent,
     UserComponent,
-    TableComponent
+    TableComponent,
+    MapaComponent,
+    MenuComponent
   ],
   imports: [
     BrowserModule,
