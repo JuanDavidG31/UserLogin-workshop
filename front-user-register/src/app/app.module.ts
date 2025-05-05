@@ -12,8 +12,8 @@ import { MapaComponent } from './mapa/mapa.component';
 import { MenuComponent } from './menu/menu.component';
 import {HTTP_INTERCEPTORS } from '@angular/common/http';
 
-import { AuthService} from './user/AuthService';
-import { AuthInterceptor } from './user/AuthInterceptor';
+import { AuthService} from './security/AuthService';
+import { AuthInterceptor } from './security/AuthInterceptor';
 
 
 @NgModule({

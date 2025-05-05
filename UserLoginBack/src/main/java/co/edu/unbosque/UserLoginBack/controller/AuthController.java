@@ -37,8 +37,8 @@ public class AuthController {
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody UserDTO loginRequest) {
 		try {
-			Authentication authentication = authenticationManager.authenticate(
-					new UsernamePasswordAuthenticationToken(loginRequest.getUser(), loginRequest.getPassword()));
+			Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+					userService.encrypt(loginRequest).getUser(), loginRequest.getPassword()));
 
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 			String jwt = jwtUtil.generateToken(userDetails);
@@ -55,11 +55,6 @@ public class AuthController {
 		if (userService.findUsernameAlreadyTaken(registerRequest.getUser())) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists");
 		}
-
-		registerRequest.setName(AESUtil.encrypt(registerRequest.getName()));
-		registerRequest.setCedula(AESUtil.encrypt(registerRequest.getCedula()));
-		registerRequest.setCoutry(AESUtil.encrypt(registerRequest.getCoutry()));
-		registerRequest.setAddress(AESUtil.encrypt(registerRequest.getAddress()));
 
 		int result = userService.create(registerRequest);
 		if (result == 0) {

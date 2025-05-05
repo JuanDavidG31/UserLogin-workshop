@@ -13,9 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 import co.edu.unbosque.UserLoginBack.dto.UserDTO;
 import co.edu.unbosque.UserLoginBack.model.User;
 import co.edu.unbosque.UserLoginBack.repository.UserRepository;
+import co.edu.unbosque.UserLoginBack.util.AESUtil;
 
 @Service
-public class UserService implements CRUDOperation<UserDTO> {
+public class UserService implements CRUDOperation<UserDTO, User> {
 
 	@Autowired
 	private UserRepository userRepo;
@@ -47,12 +48,39 @@ public class UserService implements CRUDOperation<UserDTO> {
 		if (findUsernameAlreadyTaken(entity)) {
 			return 1;
 		} else {
-			// Hash the password before saving
+			User tEntity = encrypt(data);
+			entity.setName(tEntity.getName());
+			entity.setCedula(tEntity.getCedula());
+			entity.setCoutry(tEntity.getCoutry());
+			entity.setAddress(tEntity.getAddress());
+			entity.setUser(tEntity.getUser());
 			entity.setPassword(passwordEncoder.encode(entity.getPassword()));
 
 			userRepo.save(entity);
 			return 0;
 		}
+	}
+
+	@Override
+	public User encrypt(UserDTO data) {
+		User entity = modelMapper.map(data, User.class);
+		entity.setName(AESUtil.encrypt(entity.getName()));
+		entity.setCedula(AESUtil.encrypt(entity.getCedula()));
+		entity.setCoutry(AESUtil.encrypt(entity.getCoutry()));
+		entity.setAddress(AESUtil.encrypt(entity.getAddress()));
+		entity.setUser(AESUtil.encrypt(entity.getUser()));
+		return entity;
+	}
+
+	@Override
+	public String decrypt(UserDTO data) {
+		User entity = modelMapper.map(data, User.class);
+		entity.setName(AESUtil.decrypt(entity.getName()));
+		entity.setCedula(AESUtil.decrypt(entity.getCedula()));
+		entity.setCoutry(AESUtil.decrypt(entity.getCoutry()));
+		entity.setAddress(AESUtil.decrypt(entity.getAddress()));
+		entity.setUser(AESUtil.decrypt(entity.getUser()));
+		return null;
 	}
 
 	@Override
