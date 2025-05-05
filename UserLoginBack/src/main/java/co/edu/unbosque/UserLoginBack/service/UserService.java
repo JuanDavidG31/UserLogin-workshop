@@ -121,6 +121,15 @@ public class UserService implements CRUDOperation<UserDTO> {
 		}
 	}
 
+	public UserDTO getByUser(String user) {
+		Optional<User> found = userRepo.findByUser(user);
+		if (found.isPresent()) {
+			return modelMapper.map(found.get(), UserDTO.class);
+		} else {
+			return null;
+		}
+	}
+
 	public boolean findUsernameAlreadyTaken(User newUser) {
 		Optional<User> found = userRepo.findByUser(newUser.getUsername());
 		if (found.isPresent()) {

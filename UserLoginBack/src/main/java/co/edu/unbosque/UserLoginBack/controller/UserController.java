@@ -100,6 +100,16 @@ public class UserController {
 		}
 	}
 
+	@GetMapping("/getbyuser/{user}")
+	ResponseEntity<UserDTO> getByUser(@PathVariable String user) {
+		UserDTO found = userServ.getByUser(user);
+		if (found != null) {
+			return new ResponseEntity<>(found, HttpStatus.ACCEPTED);
+		} else {
+			return new ResponseEntity<>(new UserDTO(), HttpStatus.NOT_FOUND);
+		}
+	}
+
 	@GetMapping("/showAllEncrypted")
 	public ResponseEntity<List<UserDTO>> showAllEncrypted() {
 		List<UserDTO> users = userServ.getAll();
