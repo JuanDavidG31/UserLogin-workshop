@@ -63,12 +63,30 @@ public class UserService implements CRUDOperation<UserDTO, User> {
 
 	@Override
 	public User encrypt(UserDTO data) {
+
 		User entity = modelMapper.map(data, User.class);
-		entity.setName(AESUtil.encrypt(entity.getName()));
-		entity.setCedula(AESUtil.encrypt(entity.getCedula()));
-		entity.setCoutry(AESUtil.encrypt(entity.getCoutry()));
-		entity.setAddress(AESUtil.encrypt(entity.getAddress()));
-		entity.setUser(AESUtil.encrypt(entity.getUser()));
+
+		if (entity.getUser() != null) {
+			entity.setUser(AESUtil.encrypt(entity.getUser()));
+
+		}
+		if (entity.getName() != null) {
+			entity.setName(AESUtil.encrypt(entity.getName()));
+
+		}
+		if (entity.getCedula() != null) {
+			entity.setCedula(AESUtil.encrypt(entity.getCedula()));
+
+		}
+		if (entity.getCoutry() != null) {
+			entity.setCoutry(AESUtil.encrypt(entity.getCoutry()));
+
+		}
+		if (entity.getAddress() != null) {
+			entity.setAddress(AESUtil.encrypt(entity.getAddress()));
+
+		}
+
 		return entity;
 	}
 

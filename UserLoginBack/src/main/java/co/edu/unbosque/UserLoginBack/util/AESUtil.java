@@ -22,6 +22,7 @@ public class AESUtil {
 	private final static String TIPOCIFRADO = "AES/GCM/NoPadding";
 
 	public static String encrypt(String llave, String iv, String texto) {
+		
 		Cipher cipher = null;
 		try {
 			cipher = Cipher.getInstance(TIPOCIFRADO);
@@ -83,6 +84,7 @@ public class AESUtil {
 	}
 
 	public static String encrypt(String plainText) {
+	
 		String iv = "proyectVirusdeaes";
 		String key = "keywhitsecuredlk";
 		return encrypt(key, iv, plainText);
