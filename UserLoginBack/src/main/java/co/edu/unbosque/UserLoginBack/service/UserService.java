@@ -42,7 +42,6 @@ public class UserService implements CRUDOperation<UserDTO, User> {
 	}
 
 	@Override
-	@Transactional
 	public int create(UserDTO data) {
 		User entity = modelMapper.map(data, User.class);
 		if (findUsernameAlreadyTaken(entity)) {

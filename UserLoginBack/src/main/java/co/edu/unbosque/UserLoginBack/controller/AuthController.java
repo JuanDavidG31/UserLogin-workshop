@@ -1,5 +1,7 @@
 package co.edu.unbosque.UserLoginBack.controller;
 
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -59,9 +61,13 @@ public class AuthController {
 
 		int result = userService.create(registerRequest);
 		if (result == 0) {
-			return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
+
+			return ResponseEntity.status(HttpStatus.CREATED)
+					.body(Map.of("message", "User registered successfully", "success", true));
 		} else {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error registering user");
+
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body(Map.of("message", "Error registering user", "success", false));
 		}
 	}
 

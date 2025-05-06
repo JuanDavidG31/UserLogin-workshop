@@ -48,6 +48,7 @@ export class UserComponent {
   crearCuenta() {
     this.registrationError = false;
     this.registrationSuccess = false;
+
     this.authService.register({
       user: this.username,
       password: this.tPassword,
@@ -56,17 +57,29 @@ export class UserComponent {
       country: this.country,
       address: this.address
     })
-      .subscribe(
-        (response) => {
-          console.log('Cuenta creada exitosamente:', response);
+      .subscribe({
+        next: (response: any) => {
+          alert("Usuario Creado con exito")
+          console.log('Respuesta del backend al crear cuenta:', response);
+
           this.registrationSuccess = true;
           this.resetInpusCreate();
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
+          alert("No se pudo crear el usuario")
           console.error('Error al crear cuenta:', error);
+
+          if (error.status === 409) {
+            alert("El usuario ya existe")
+            console.error('El usuario ya existe.');
+          } else if (error.status === 400) {
+            alert("Datos inválidos")
+            console.error('Datos inválidos');
+          }
+
           this.registrationError = true;
         }
-      );
+      });
   }
 
   resetInpusLogin() {
