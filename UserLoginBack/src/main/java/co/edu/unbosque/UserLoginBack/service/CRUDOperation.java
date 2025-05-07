@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface CRUDOperation<T, E> {
 
-	public int create(T data);
+	public int create(T data, String rol);
 
 	public List<T> getAll();
 

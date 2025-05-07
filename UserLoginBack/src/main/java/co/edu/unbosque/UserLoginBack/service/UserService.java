@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import co.edu.unbosque.UserLoginBack.dto.UserDTO;
 import co.edu.unbosque.UserLoginBack.model.User;
+import co.edu.unbosque.UserLoginBack.model.User.Role;
 import co.edu.unbosque.UserLoginBack.repository.UserRepository;
 import co.edu.unbosque.UserLoginBack.util.AESUtil;
 
@@ -42,8 +43,13 @@ public class UserService implements CRUDOperation<UserDTO, User> {
 	}
 
 	@Override
-	public int create(UserDTO data) {
+	public int create(UserDTO data, String rol) {
 		User entity = modelMapper.map(data, User.class);
+		if (rol.equals("ADMIN")) {
+			entity.setRole(Role.ADMIN);
+		} else if (rol.equals("USER")) {
+			entity.setRole(Role.USER);
+		}
 		if (entity.getAddress().equals("") || entity.getUser().equals("") || entity.getPassword().equals("")
 				|| entity.getName().equals("") || entity.getCedula().equals("") || entity.getCoutry().equals("")
 				|| entity.getCoutry() == null) {

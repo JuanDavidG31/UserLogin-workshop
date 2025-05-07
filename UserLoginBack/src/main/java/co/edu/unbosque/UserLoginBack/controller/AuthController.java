@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.unbosque.UserLoginBack.dto.UserDTO;
@@ -53,12 +54,17 @@ public class AuthController {
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity<?> register(@RequestBody UserDTO registerRequest) {
+	public ResponseEntity<?> register(@RequestBody UserDTO registerRequest, @RequestParam String rol) {
 		if (userService.findUsernameAlreadyTaken(registerRequest.getUser())) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists");
 		}
+		int result = 0;
+		if (rol.equals("ADMIN")) {
+			result = userService.create(registerRequest, "ADMIN");
+		} else if (rol.equals("USER")) {
+			result = userService.create(registerRequest, "USER");
+		}
 
-		int result = userService.create(registerRequest);
 		if (result == 0) {
 
 			return ResponseEntity.status(HttpStatus.CREATED)
