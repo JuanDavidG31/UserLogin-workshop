@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MapaComponent } from './mapa.component';
+import { UserAdminComponent } from './user-admin.component';
 
 describe('MapaComponent', () => {
-  let component: MapaComponent;
-  let fixture: ComponentFixture<MapaComponent>;
+  let component: UserAdminComponent;
+  let fixture: ComponentFixture<UserAdminComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [MapaComponent]
+      declarations: [UserAdminComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(MapaComponent);
+    fixture = TestBed.createComponent(UserAdminComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

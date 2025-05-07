@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthService} from '../security/AuthService';
-import { HttpErrorResponse } from '@angular/common/http';
+import {Router} from '@angular/router';
+import {AuthService} from '../security/AuthService';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
-  selector: 'app-user',
+  selector: 'app-user-admin',
   standalone: false,
-  templateUrl: './user.component.html',
-  styleUrl: './user.component.scss'
+  templateUrl: './user-admin.component.html',
+  styleUrl: './user-admin.component.scss'
 })
-export class UserComponent {
+export class UserAdminComponent {
   user = '';
   password = '';
   loginError = false;
@@ -45,8 +45,8 @@ export class UserComponent {
       );
   }
 
-  irPaginaAdmin(){
-    this.router.navigate(['/loginAdmin']);
+  irPaginaSesion(){
+    this.router.navigate(['/login']);
   }
 
   crearCuenta() {

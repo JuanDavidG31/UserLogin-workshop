@@ -8,7 +8,7 @@ import { provideHttpClient } from '@angular/common/http';
 
 import { UserComponent } from './user/user.component';
 import { TableComponent } from './table/table.component';
-import { MapaComponent } from './mapa/mapa.component';
+import { UserAdminComponent } from './user-admin/user-admin.component';
 import { MenuComponent } from './menu/menu.component';
 import {HTTP_INTERCEPTORS } from '@angular/common/http';
 
@@ -21,7 +21,7 @@ import { AuthInterceptor } from './security/AuthInterceptor';
     AppComponent,
     UserComponent,
     TableComponent,
-    MapaComponent,
+    UserAdminComponent,
     MenuComponent,
   ],
   imports: [
