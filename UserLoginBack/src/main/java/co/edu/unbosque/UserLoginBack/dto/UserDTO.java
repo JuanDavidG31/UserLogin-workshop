@@ -2,6 +2,8 @@ package co.edu.unbosque.UserLoginBack.dto;
 
 import java.util.Objects;
 
+import co.edu.unbosque.UserLoginBack.model.User.Role;
+
 public class UserDTO {
 	private Long id;
 	private String user;
@@ -10,6 +12,7 @@ public class UserDTO {
 	private String cedula;
 	private String coutry;
 	private String address;
+	private Role role;
 
 	public UserDTO() {
 		// TODO Auto-generated constructor stub
@@ -22,6 +25,16 @@ public class UserDTO {
 		this.cedula = cedula;
 		this.coutry = coutry;
 		this.address = address;
+	}
+
+	public UserDTO(String user, String password, String name, String cedula, String coutry, String address, Role role) {
+		this.user = user;
+		this.password = password;
+		this.name = name;
+		this.cedula = cedula;
+		this.coutry = coutry;
+		this.address = address;
+		this.role = role;
 	}
 
 	public Long getId() {
@@ -80,11 +93,26 @@ public class UserDTO {
 		this.address = address;
 	}
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(id, password, user);
+	public Role getRole() {
+		return role;
 	}
 
+	public void setRole(Role role) {
+		this.role = role;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, password, role, user);
+	}
+
+	/**
+	 * Compara este objeto con otro para determinar igualdad. Dos objetos UserDTO
+	 * son iguales si tienen el mismo id, username, password y role.
+	 *
+	 * @param obj Objeto a comparar
+	 * @return true si los objetos son iguales, false en caso contrario
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -94,7 +122,7 @@ public class UserDTO {
 		if (getClass() != obj.getClass())
 			return false;
 		UserDTO other = (UserDTO) obj;
-		return Objects.equals(id, other.id) && Objects.equals(password, other.password)
+		return Objects.equals(id, other.id) && Objects.equals(password, other.password) && role == other.role
 				&& Objects.equals(user, other.user);
 	}
 

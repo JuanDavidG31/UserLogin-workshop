@@ -21,7 +21,15 @@ import co.edu.unbosque.UserLoginBack.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
-
+/**
+ * Controlador REST para la gestión de usuarios. Proporciona endpoints para crear, leer, actualizar
+ * y eliminar usuarios. Requiere autenticación JWT para todos los endpoints. Los endpoints /getall,
+ * /count, /exists/*, /getbyid/* son accesibles para usuarios con ROLE_USER o ROLE_ADMIN. Todos los
+ * demás endpoints requieren ROLE_ADMIN.
+ *
+ * @author Universidad El Bosque
+ * @version 0.1
+ */
 @RestController
 @RequestMapping("/user")
 @CrossOrigin(origins = { "http://localhost:8080", "http://localhost:8081", "http://localhost:8082" })

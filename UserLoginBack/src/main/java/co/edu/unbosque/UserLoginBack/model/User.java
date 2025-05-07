@@ -169,6 +169,13 @@ public class User implements UserDetails {
 		return Objects.hash(id, password, user);
 	}
 
+	/**
+	 * Compara este usuario con otro objeto para determinar si son iguales. Dos
+	 * usuarios son iguales si tienen el mismo id, password y username.
+	 * 
+	 * @param obj El objeto a comparar con este usuario
+	 * @return true si los objetos son iguales, false en caso contrario
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -195,7 +202,7 @@ public class User implements UserDetails {
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", user=" + user + ", password=" + password + ", name=" + name + ", cedula=" + cedula
-				+ ", coutry=" + coutry + ", address=" + address +  "]";
+				+ ", coutry=" + coutry + ", address=" + address + "]";
 	}
 
 }
