@@ -14,27 +14,50 @@ import co.edu.unbosque.UserLoginBack.model.User.Role;
 import co.edu.unbosque.UserLoginBack.repository.UserRepository;
 import co.edu.unbosque.UserLoginBack.util.AESUtil;
 
+/**
+ * Clase de configuración para cargar datos iniciales en la base de datos. Crea
+ * usuarios predeterminados (administrador y usuario normal) al iniciar la
+ * aplicación si estos no existen previamente.
+ */
 @Configuration
 public class LoadDatabase {
+	/** Logger para registrar mensajes durante la carga de datos. */
 	private static final Logger log = LoggerFactory.getLogger(LoadDatabase.class);
 
+	/**
+	 * Inicializa la base de datos con usuarios predeterminados. Crea un usuario
+	 * administrador y un usuario normal si no existen.
+	 *
+	 * @param userRepo        Repositorio de usuarios para acceder a la base de
+	 *                        datos
+	 * @param passwordEncoder Codificador de contraseñas para encriptar las
+	 *                        contraseñas de los usuarios
+	 * @return Un CommandLineRunner que se ejecuta al iniciar la aplicación
+	 */
 	@Bean
-	CommandLineRunner initDatabase(UserRepository userRepo, PasswordEncoder passwordEndcoder) {
+	CommandLineRunner initDatabase(UserRepository userRepo, PasswordEncoder passwordEncoder) {
 
 		return args -> {
 			Optional<User> found = userRepo.findByUser(AESUtil.encrypt("admin"));
 			if (found.isPresent()) {
-				log.info("Admin already exists,  skipping admin creating  ...");
+				log.info("El administrador ya existe, omitiendo la creación del administrador...");
 			} else {
-
-				User user = new User(AESUtil.encrypt("admin"), passwordEndcoder.encode("1234567890"), null, null, null,
-						null);
-				user.setRole(Role.ADMIN);
-
-				userRepo.save(user);
-				log.info("Preloading admin user");
+				User adminUser = new User(AESUtil.encrypt("admin"), passwordEncoder.encode("1234567890"), null, null,
+						null, null);
+				adminUser.setRole(Role.ADMIN);
+				userRepo.save(adminUser);
+				log.info("Precargando usuario administrador");
+			}
+			Optional<User> found2 = userRepo.findByUser(AESUtil.encrypt("normaluser"));
+			if (found2.isPresent()) {
+				log.info("El usuario normal ya existe, omitiendo la creación del usuario normal...");
+			} else {
+				User normalUser = new User(AESUtil.encrypt("normaluser"), passwordEncoder.encode("1234567890"), null,
+						null, null, null);
+				normalUser.setRole(Role.USER);
+				userRepo.save(normalUser);
+				log.info("Precargando usuario normal");
 			}
 		};
 	}
-
 }
