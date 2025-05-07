@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -17,7 +17,7 @@ interface RegisterRequest {
   password: string;
   name: string;
   cedula: string;
-  country: string;
+  coutry: string;
   address: string;
 }
 
@@ -55,8 +55,17 @@ export class AuthService {
       );
   }
 
-  register(userData: RegisterRequest): Observable<any> {
-    return this.http.post(this.apiUrlRegister, userData);
+  register(userData: {
+    user: string;
+    password: string;
+    name: string;
+    cedula: string;
+    coutry: string;
+    address: string;
+    rol:string;
+  }, ): Observable<any> {
+    const params = new HttpParams().set('rol', userData.rol);
+    return this.http.post(this.apiUrlRegister, userData, { params });
   }
 
   updateUser(userData: UpdateUserRequest): Observable<any> {

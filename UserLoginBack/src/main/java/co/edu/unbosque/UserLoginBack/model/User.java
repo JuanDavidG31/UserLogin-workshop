@@ -195,7 +195,7 @@ public class User implements UserDetails {
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", user=" + user + ", password=" + password + ", name=" + name + ", cedula=" + cedula
-				+ ", coutry=" + coutry + ", address=" + address + "]";
+				+ ", coutry=" + coutry + ", address=" + address +  "]";
 	}
 
 }

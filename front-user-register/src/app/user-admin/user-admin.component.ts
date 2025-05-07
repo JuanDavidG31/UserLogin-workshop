@@ -15,7 +15,6 @@ export class UserAdminComponent {
   loginError = false;
   registrationError = false;
   registrationSuccess = false;
-
   name = '';
   cedula = '';
   username = '';
@@ -58,8 +57,9 @@ export class UserAdminComponent {
       password: this.tPassword,
       name: this.name,
       cedula: this.cedula,
-      country: this.country,
-      address: this.address
+      coutry: this.country,
+      address: this.address,
+      rol: "ADMIN"
     })
       .subscribe({
         next: (response: any) => {

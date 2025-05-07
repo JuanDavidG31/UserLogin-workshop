@@ -15,7 +15,6 @@ export class UserComponent {
   loginError = false;
   registrationError = false;
   registrationSuccess = false;
-
   name = '';
   cedula = '';
   username = '';
@@ -50,16 +49,19 @@ export class UserComponent {
   }
 
   crearCuenta() {
+
     this.registrationError = false;
     this.registrationSuccess = false;
 
     this.authService.register({
+
       user: this.username,
       password: this.tPassword,
       name: this.name,
       cedula: this.cedula,
-      country: this.country,
-      address: this.address
+      coutry: this.country,
+      address: this.address,
+      rol:"USER"
     })
       .subscribe({
         next: (response: any) => {

@@ -87,10 +87,17 @@
             <label for="country" class="form-label">País de Origen</label>
             <select
               id="country"
-              name="country" class="form-select"
-              required [(ngModel)]="country"
+              name="country"
+              class="form-select"
+              required
+              [(ngModel)]="country"
             >
-              <option value="" selected disabled>Pais</option>
+              <option disabled selected value="">Seleccione un país</option>
+              <option value="Colombia">Colombia</option>
+              <option value="México">México</option>
+              <option value="Argentina">Argentina</option>
+              <option value="España">España</option>
+
             </select>
           </div>
           <div class="mb-3">
