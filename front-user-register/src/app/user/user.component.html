@@ -26,9 +26,14 @@
         Error al iniciar sesión. Por favor, verifica tus credenciales.
       </div>
     </form>
-    <button type="button" class="btn btn-link mt-3 p-0 w-auto mx-auto d-block" data-bs-toggle="modal" data-bs-target="#createAccountModal">
-      Crear Cuenta
-    </button>
+    <div class="d-flex justify-content-between mt-3">
+      <button type="button" class="btn btn-link p-0" (click)="irPaginaAdmin()">
+        Administrador
+      </button>
+      <button type="button" class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#createAccountModal">
+        Crear Cuenta
+      </button>
+    </div>
   </div>
 </div>
 
@@ -99,7 +104,6 @@
             <input
               type="file" class="form-control"
               id="image" name="image" placeholder="Tu Imagen"
-
               [(ngModel)]="image"
             />
           </div>

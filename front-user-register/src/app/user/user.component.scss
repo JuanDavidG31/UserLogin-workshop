@@ -217,26 +217,19 @@
 }
 
 .btn-close {
-  background-color: black !important;
-  color: #000000 !important;
-  box-sizing: content-box;
-  width: 1em;
-  height: 1em;
-  padding: 0.25em 0.25em;
+  background-color: transparent;
+  border: none;
   color: #000;
-  border: 0;
-  border-radius: 0.25rem;
   opacity: 0.5;
+}
 
-  &:hover {
-    opacity: 0.75;
-  }
+.btn-close:hover {
+  opacity: 0.75;
+}
 
-  &:focus {
-    outline: 0;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-    opacity: 1;
-  }
+.btn-close:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 
 .modal-body {

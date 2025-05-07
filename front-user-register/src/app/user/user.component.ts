@@ -45,6 +45,10 @@ export class UserComponent {
       );
   }
 
+  irPaginaAdmin(){
+
+  }
+
   crearCuenta() {
     this.registrationError = false;
     this.registrationSuccess = false;

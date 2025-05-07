@@ -44,6 +44,11 @@ public class UserService implements CRUDOperation<UserDTO, User> {
 	@Override
 	public int create(UserDTO data) {
 		User entity = modelMapper.map(data, User.class);
+		if (entity.getAddress().equals("") || entity.getUser().equals("") || entity.getPassword().equals("")
+				|| entity.getName().equals("") || entity.getCedula().equals("") || entity.getCoutry().equals("")
+				|| entity.getCoutry() == null) {
+			return 1;
+		}
 		if (findUsernameAlreadyTaken(entity)) {
 			return 1;
 		} else {
@@ -54,7 +59,6 @@ public class UserService implements CRUDOperation<UserDTO, User> {
 			entity.setAddress(tEntity.getAddress());
 			entity.setUser(tEntity.getUser());
 			entity.setPassword(passwordEncoder.encode(entity.getPassword()));
-
 			userRepo.save(entity);
 			return 0;
 		}

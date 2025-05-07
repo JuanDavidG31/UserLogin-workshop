@@ -22,7 +22,7 @@ public class AESUtil {
 	private final static String TIPOCIFRADO = "AES/GCM/NoPadding";
 
 	public static String encrypt(String llave, String iv, String texto) {
-		
+
 		Cipher cipher = null;
 		try {
 			cipher = Cipher.getInstance(TIPOCIFRADO);
@@ -84,7 +84,7 @@ public class AESUtil {
 	}
 
 	public static String encrypt(String plainText) {
-	
+
 		String iv = "proyectVirusdeaes";
 		String key = "keywhitsecuredlk";
 		return encrypt(key, iv, plainText);
@@ -109,5 +109,4 @@ public class AESUtil {
 	public static String hashingToSHA512(String content) {
 		return DigestUtils.sha512Hex(content);
 	}
-
 }

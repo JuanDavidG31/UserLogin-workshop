@@ -54,7 +54,6 @@ public class AuthController {
 
 	@PostMapping("/register")
 	public ResponseEntity<?> register(@RequestBody UserDTO registerRequest) {
-		// Check if username already exists
 		if (userService.findUsernameAlreadyTaken(registerRequest.getUser())) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists");
 		}
