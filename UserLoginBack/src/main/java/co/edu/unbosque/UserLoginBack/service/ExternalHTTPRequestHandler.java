@@ -1,18 +1,16 @@
-
 package co.edu.unbosque.UserLoginBack.service;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.time.Duration;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -20,71 +18,78 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-
+@Service
 public class ExternalHTTPRequestHandler {
 
-	private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2)
-			.connectTimeout(Duration.ofSeconds(10)).build();
+    private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2)
+            .connectTimeout(Duration.ofSeconds(10)).build();
 
-	public static String doGetAndParse(String url) {
-		HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(url))
-				.header("Content-type", "application/json").build();
+    
+    private String googleMapsApiKey="AIzaSyDqVEBOuW5eMA2WSUHPFBqOD5rPR9hFDhs";
 
-		HttpResponse<String> response = null;
+    private static final String GEOCODING_API_URL_BASE = "https://maps.googleapis.com/maps/api/geocode/json";
+    private static final String STATIC_MAPS_API_URL_BASE = "https://maps.googleapis.com/maps/api/staticmap";
 
-		try {
-			response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+    public JsonObject getCoordinatesFromAddress(String text) {
+    	try {
+            String encodedAddress = URLEncoder.encode(text, StandardCharsets.UTF_8);
+            String geocodingUrl = GEOCODING_API_URL_BASE + "?address=" + encodedAddress + "&key=" + googleMapsApiKey;
+            String geocodingResponse = doGetAndParse(geocodingUrl);
+            return JsonParser.parseString(geocodingResponse).getAsJsonObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Manejar la excepción apropiadamente
+            return null;
+        }
+    }
 
-		System.out.println("status code -> " + response.statusCode());
-		String uglyJson = response.body();
-		return prettyPrintUsingGson(uglyJson);
-	}
+    public String getStaticMapImageUrl(double latitude, double longitude) {
+        String staticMapUrl = STATIC_MAPS_API_URL_BASE + "?center=" + String.format("%f,%f", latitude, longitude) +
+                              "&zoom=15" +
+                              "&size=600x400" +
+                              "&markers=color:red|label:A|" + String.format("%f,%f", latitude, longitude) +
+                              "&key=" + googleMapsApiKey;
+        return staticMapUrl;
+    }
 
-	public static String prettyPrintUsingGson(String uglyJson) {
-		Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().create();
-		JsonElement jsonElement = JsonParser.parseString(uglyJson);
-		String prettyJsonString = gson.toJson(jsonElement);
-		return prettyJsonString;
+    public String getMapForAddress(String address) {
+        JsonObject geocodingResponseJson = getCoordinatesFromAddress(address);
 
-	}
+        if (geocodingResponseJson != null && geocodingResponseJson.has("results") && geocodingResponseJson.getAsJsonArray("results").size() > 0) {
+            JsonObject firstResult = geocodingResponseJson.getAsJsonArray("results").get(0).getAsJsonObject();
+            JsonObject location = firstResult.getAsJsonObject("geometry").getAsJsonObject("location");
+            double latitude = location.get("lat").getAsDouble();
+            double longitude = location.get("lng").getAsDouble();
 
-	public static String toPostFileAndConvertToDTOVirus(String url, String apiKey, File file) {
-		String boundary = "----JavaMultipartBoundary" + System.currentTimeMillis();
-		HttpResponse<String> response = null;
+            return getStaticMapImageUrl(latitude, longitude);
+        } else {
+            return "Error: No se pudieron obtener las coordenadas para la dirección proporcionada.";
+        }
+    }
 
-		try {
-			var byteStream = new ByteArrayOutputStream();
-			var writer = new PrintWriter(new OutputStreamWriter(byteStream, StandardCharsets.UTF_8), true);
+    public String doGetAndParse(String url) { // Ahora no es estático
+        HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(url))
+                .header("Content-type", "application/json").build();
 
-			writer.append("--").append(boundary).append("\r\n");
-			writer.append("Content-Disposition: form-data; name=\"file\"; filename=\"").append(file.getName())
-					.append("\"\r\n");
-			writer.append("Content-Type: application/octet-stream\r\n\r\n");
-			writer.flush();
+        HttpResponse<String> response = null;
 
-			Files.copy(file.toPath(), byteStream);
-			byteStream.write("\r\n".getBytes(StandardCharsets.UTF_8));
-			writer.append("--").append(boundary).append("--\r\n");
-			writer.flush();
+        try {
+            response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).header("x-apikey", apiKey)
-					.header("Content-Type", "multipart/form-data; boundary=" + boundary)
-					.POST(HttpRequest.BodyPublishers.ofByteArray(byteStream.toByteArray())).build();
+        System.out.println("status code -> " + response.statusCode());
+        String uglyJson = response.body();
+        return prettyPrintUsingGson(uglyJson);
+    }
 
-			response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
-
-		} catch (IOException | InterruptedException e) {
-			e.printStackTrace();
-		}
-
-		JsonObject json = JsonParser.parseString(response.body()).getAsJsonObject();
-		return json.getAsJsonObject("data").get("id").getAsString();
-	}
-
-
+    public String prettyPrintUsingGson(String uglyJson) { // Tampoco es estático
+        Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().create();
+        JsonElement jsonElement = JsonParser.parseString(uglyJson);
+        String prettyJsonString = gson.toJson(jsonElement);
+        return prettyJsonString;
+    }
 }
