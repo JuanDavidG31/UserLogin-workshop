@@ -58,7 +58,7 @@ public class AuthController {
 		if (userService.findUsernameAlreadyTaken(registerRequest.getUser())) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists");
 		}
-		int result = 0;
+		int result = 1;
 		if (rol.equals("ADMIN")) {
 			result = userService.create(registerRequest, "ADMIN");
 		} else if (rol.equals("USER")) {

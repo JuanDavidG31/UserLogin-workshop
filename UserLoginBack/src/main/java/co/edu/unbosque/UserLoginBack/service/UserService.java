@@ -51,8 +51,7 @@ public class UserService implements CRUDOperation<UserDTO, User> {
 			entity.setRole(Role.USER);
 		}
 		if (entity.getAddress().equals("") || entity.getUser().equals("") || entity.getPassword().equals("")
-				|| entity.getName().equals("") || entity.getCedula().equals("") || entity.getCoutry().equals("")
-				|| entity.getCoutry() == null) {
+				|| entity.getName().equals("") || entity.getCedula().equals("") || entity.getCoutry() == null) {
 			return 1;
 		}
 		if (findUsernameAlreadyTaken(entity)) {

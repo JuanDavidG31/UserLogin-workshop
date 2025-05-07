@@ -47,7 +47,7 @@ public class User implements UserDetails {
 		this.accountNonLocked = true;
 		this.credentialsNonExpired = true;
 		this.enabled = true;
-		this.role = Role.USER;
+		this.role = null;
 	}
 
 	public User(String user, String password, String name, String cedula, String coutry, String address) {
