@@ -1,8 +1,15 @@
 package co.edu.unbosque.UserLoginBack.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -10,11 +17,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import co.edu.unbosque.UserLoginBack.dto.UserDTO;
 import co.edu.unbosque.UserLoginBack.model.User;
@@ -59,6 +69,72 @@ public class AuthController {
 		this.authenticationManager = authenticationManager;
 		this.jwtUtil = jwtUtil;
 		this.userService = userService;
+	}
+
+	@Operation(summary = "Subir un archivo")
+	@PostMapping(value = "/subir-archivo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<?> subirArchivo(
+			@Parameter(description = "Archivo a subir", name = "archivo", content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE)) @RequestParam("archivo") MultipartFile archivo) {
+		if (archivo.isEmpty()) {
+			return ResponseEntity.badRequest()
+					.body(Map.of("message", "Por favor, selecciona un archivo para subir.", "success", false));
+		}
+
+		try {
+			String home = System.getProperty("user.home");
+			Path carpetaDestinoPath = Paths.get(home, "archivos-subidos");
+			if (!Files.exists(carpetaDestinoPath)) {
+				Files.createDirectories(carpetaDestinoPath);
+			}
+
+			String nombreOriginal = archivo.getOriginalFilename();
+			String extension = "";
+			int puntoIndex = nombreOriginal.lastIndexOf('.');
+			if (puntoIndex > 0 && puntoIndex < nombreOriginal.length() - 1) {
+				extension = nombreOriginal.substring(puntoIndex);
+			}
+			String nombreAleatorio = UUID.randomUUID().toString() + extension;
+			Path archivoDestinoPath = carpetaDestinoPath.resolve(nombreAleatorio);
+
+			Files.copy(archivo.getInputStream(), archivoDestinoPath);
+
+			return ResponseEntity.ok(Map.of("nombreArchivo", nombreAleatorio, "message", "Archivo subido exitosamente.",
+					"success", true));
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(Map.of("message", "Error al subir el archivo: " + e.getMessage(), "success", false));
+		}
+	}
+
+	@GetMapping("/archivo/{nombreArchivo}")
+	public ResponseEntity<?> obtenerArchivo(@PathVariable String nombreArchivo) {
+		try {
+			String home = System.getProperty("user.home");
+			Path carpetaPath = Paths.get(home, "archivos-subidos");
+			Path archivoPath = carpetaPath.resolve(nombreArchivo);
+			File archivo = archivoPath.toFile();
+
+			if (!archivo.exists()) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND)
+						.body(Map.of("message", "Archivo no encontrado", "success", false));
+			}
+
+			byte[] contenido = Files.readAllBytes(archivoPath);
+
+			String tipoMime = Files.probeContentType(archivoPath);
+			if (tipoMime == null) {
+				tipoMime = "application/octet-stream";
+			}
+
+			return ResponseEntity.ok().contentType(MediaType.parseMediaType(tipoMime)).body(contenido);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(Map.of("message", "Error al leer el archivo: " + e.getMessage(), "success", false));
+		}
 	}
 
 	/**

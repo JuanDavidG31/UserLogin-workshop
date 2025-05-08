@@ -43,7 +43,7 @@ public class LoadDatabase {
 				log.info("El administrador ya existe, omitiendo la creación del administrador...");
 			} else {
 				User adminUser = new User(AESUtil.encrypt("admin"), passwordEncoder.encode("1234567890"), null, null,
-						null, null);
+						null, null, null);
 				adminUser.setRole(Role.ADMIN);
 				userRepo.save(adminUser);
 				log.info("Precargando usuario administrador");
@@ -53,7 +53,7 @@ public class LoadDatabase {
 				log.info("El usuario normal ya existe, omitiendo la creación del usuario normal...");
 			} else {
 				User normalUser = new User(AESUtil.encrypt("normaluser"), passwordEncoder.encode("1234567890"), null,
-						null, null, null);
+						null, null, null, null);
 				normalUser.setRole(Role.USER);
 				userRepo.save(normalUser);
 				log.info("Precargando usuario normal");

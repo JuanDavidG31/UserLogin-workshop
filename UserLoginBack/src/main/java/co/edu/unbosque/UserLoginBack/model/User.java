@@ -33,6 +33,7 @@ public class User implements UserDetails {
 	private String cedula;
 	private String coutry;
 	private String address;
+	private String image;
 
 	@Enumerated(EnumType.STRING)
 	private Role role;
@@ -50,7 +51,7 @@ public class User implements UserDetails {
 		this.role = null;
 	}
 
-	public User(String user, String password, String name, String cedula, String coutry, String address) {
+	public User(String user, String password, String name, String cedula, String coutry, String address, String image) {
 		this();
 		this.user = user;
 		this.password = password;
@@ -58,10 +59,19 @@ public class User implements UserDetails {
 		this.cedula = cedula;
 		this.coutry = coutry;
 		this.address = address;
+		this.image = image;
 	}
 
 	public enum Role {
 		USER, ADMIN
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
 	}
 
 	public Long getId() {

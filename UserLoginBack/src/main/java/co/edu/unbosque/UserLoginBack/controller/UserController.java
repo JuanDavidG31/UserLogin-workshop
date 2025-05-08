@@ -1,31 +1,45 @@
 package co.edu.unbosque.UserLoginBack.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import co.edu.unbosque.UserLoginBack.dto.UserDTO;
 import co.edu.unbosque.UserLoginBack.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.transaction.Transactional;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import io.swagger.v3.oas.annotations.media.Content;
+
 /**
- * Controlador REST para la gestión de usuarios. Proporciona endpoints para crear, leer, actualizar
- * y eliminar usuarios. Requiere autenticación JWT para todos los endpoints. Los endpoints /getall,
- * /count, /exists/*, /getbyid/* son accesibles para usuarios con ROLE_USER o ROLE_ADMIN. Todos los
- * demás endpoints requieren ROLE_ADMIN.
+ * Controlador REST para la gestión de usuarios. Proporciona endpoints para
+ * crear, leer, actualizar y eliminar usuarios. Requiere autenticación JWT para
+ * todos los endpoints. Los endpoints /getall, /count, /exists/*, /getbyid/* son
+ * accesibles para usuarios con ROLE_USER o ROLE_ADMIN. Todos los demás
+ * endpoints requieren ROLE_ADMIN.
  *
  * @author Universidad El Bosque
  * @version 0.1
@@ -42,6 +56,8 @@ public class UserController {
 
 	public UserController() {
 	}
+
+
 
 	@PutMapping(path = "/updatejson", consumes = MediaType.APPLICATION_JSON_VALUE)
 	ResponseEntity<String> updateNewWithJSON(@RequestParam Long id, @RequestBody UserDTO newUser) {
@@ -62,7 +78,7 @@ public class UserController {
 	@PutMapping(path = "/update")
 	ResponseEntity<String> updateNew(@RequestParam long id, @RequestParam String newUsername,
 			@RequestParam String newPassword) {
-		UserDTO newUser = new UserDTO(newUsername, newPassword, null, null, null, null);
+		UserDTO newUser = new UserDTO(newUsername, newPassword, null, null, null, null, null);
 
 		int status = userServ.updateById(id, newUser);
 

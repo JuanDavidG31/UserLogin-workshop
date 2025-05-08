@@ -101,10 +101,14 @@
               required autocomplete="street-address"
               [(ngModel)]="address"
             />
+          </div>
+          <div class="mb-3">
             <input
-              type="file" class="form-control"
-              id="image" name="image" placeholder="Tu Imagen"
-              [(ngModel)]="image"
+              type="file"
+              class="form-control"
+              id="image"
+              name="image"
+              (change)="onImageSelected($event)"
             />
           </div>
         </div>

@@ -21,7 +21,8 @@ export class UserAdminComponent {
   tPassword = '';
   country = '';
   address = '';
-  image:any;
+  image='';
+  imagen: File | null = null;
 
   constructor(private router: Router, private authService: AuthService) { }
 
@@ -48,10 +49,33 @@ export class UserAdminComponent {
     this.router.navigate(['/login']);
   }
 
+  onImageSelected(event: any): void {
+    this.imagen = event.target.files[0] as File;
+  }
+
   crearCuenta() {
     this.registrationError = false;
     this.registrationSuccess = false;
 
+    if (this.imagen) {
+      this.authService.subirArchivo(this.imagen).subscribe({
+        next: (response: any) => {
+          console.log('Respuesta de subida de imagen:', response);
+          this.image = response.nombreArchivo;
+          this.registrarUsuario();
+        },
+        error: (error: HttpErrorResponse) => {
+          alert('Error al subir la imagen.');
+          console.error('Error al subir la imagen:', error);
+          this.registrationError = true;
+        },
+      });
+    } else {
+      this.registrarUsuario();
+    }
+  }
+
+  registrarUsuario() {
     this.authService.register({
       user: this.username,
       password: this.tPassword,
@@ -59,31 +83,30 @@ export class UserAdminComponent {
       cedula: this.cedula,
       coutry: this.country,
       address: this.address,
+      image: this.image,
       rol: "ADMIN"
-    })
-      .subscribe({
-        next: (response: any) => {
-          alert("Usuario Creado con exito")
-          console.log('Respuesta del backend al crear cuenta:', response);
+    }).subscribe({
+      next: (response: any) => {
+        alert('Usuario Creado con éxito');
+        console.log('Respuesta del backend al crear cuenta:', response);
+        this.registrationSuccess = true;
+        this.resetInpusCreate();
+      },
+      error: (error: HttpErrorResponse) => {
+        alert('No se pudo crear el usuario');
+        console.error('Error al crear cuenta:', error);
 
-          this.registrationSuccess = true;
-          this.resetInpusCreate();
-        },
-        error: (error: HttpErrorResponse) => {
-          alert("No se pudo crear el usuario")
-          console.error('Error al crear cuenta:', error);
-
-          if (error.status === 409) {
-            alert("El usuario ya existe")
-            console.error('El usuario ya existe.');
-          } else if (error.status === 400) {
-            alert("Datos inválidos")
-            console.error('Datos inválidos');
-          }
-
-          this.registrationError = true;
+        if (error.status === 409) {
+          alert('El usuario ya existe');
+          console.error('El usuario ya existe.');
+        } else if (error.status === 400) {
+          alert('Datos inválidos');
+          console.error('Datos inválidos');
         }
-      });
+
+        this.registrationError = true;
+      },
+    });
   }
 
   resetInpusLogin() {
@@ -99,6 +122,6 @@ export class UserAdminComponent {
     this.tPassword = '';
     this.country = '';
     this.address = '';
-    this.image = null;
+    this.image = '';
   }
 }

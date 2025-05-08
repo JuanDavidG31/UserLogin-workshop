@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -19,6 +19,8 @@ interface RegisterRequest {
   cedula: string;
   coutry: string;
   address: string;
+  image:string;
+  rol:string;
 }
 
 @Injectable({
@@ -28,12 +30,25 @@ export class AuthService {
   private apiUrlLogin = 'http://localhost:8081/auth/login';
   private apiUrlRegister = 'http://localhost:8081/auth/register';
   private apiUrlUpdate = 'http://localhost:8081/user/updatejson';
+  private apiUrlSubirArchivo = 'http://localhost:8081/auth/subir-archivo';
+  private apiUrlObtenerArchivoBase = 'http://localhost:8081/auth/archivo';
   private tokenKey = 'authToken';
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasToken());
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
   constructor(private http: HttpClient) {
     console.log('Initial isAuthenticated:', this.hasToken());
+  }
+
+  subirArchivo(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append("archivo", file);
+
+    return this.http.post(this.apiUrlSubirArchivo, formData);
+  }
+
+  obtenerUrlArchivo(nombreArchivo: string): string {
+    return `${this.apiUrlObtenerArchivoBase}/${nombreArchivo}`;
   }
 
   login(credentials: any): Observable<boolean> {
@@ -55,15 +70,7 @@ export class AuthService {
       );
   }
 
-  register(userData: {
-    user: string;
-    password: string;
-    name: string;
-    cedula: string;
-    coutry: string;
-    address: string;
-    rol:string;
-  }, ): Observable<any> {
+  register(userData: RegisterRequest): Observable<any> {
     const params = new HttpParams().set('rol', userData.rol);
     return this.http.post(this.apiUrlRegister, userData, { params });
   }
@@ -118,7 +125,7 @@ export class AuthService {
       try {
         const base64Url = token.split('.')[1];
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
           return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
         }).join(''));
 

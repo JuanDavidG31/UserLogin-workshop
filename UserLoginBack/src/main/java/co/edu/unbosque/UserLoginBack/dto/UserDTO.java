@@ -12,29 +12,22 @@ public class UserDTO {
 	private String cedula;
 	private String coutry;
 	private String address;
+	private String image;
 	private Role role;
 
 	public UserDTO() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public UserDTO(String user, String password, String name, String cedula, String coutry, String address) {
+	public UserDTO(String user, String password, String name, String cedula, String coutry, String address,
+			String image) {
 		this.user = user;
 		this.password = password;
 		this.name = name;
 		this.cedula = cedula;
 		this.coutry = coutry;
 		this.address = address;
-	}
-
-	public UserDTO(String user, String password, String name, String cedula, String coutry, String address, Role role) {
-		this.user = user;
-		this.password = password;
-		this.name = name;
-		this.cedula = cedula;
-		this.coutry = coutry;
-		this.address = address;
-		this.role = role;
+		this.image = image;
 	}
 
 	public Long getId() {
@@ -99,6 +92,14 @@ public class UserDTO {
 
 	public void setRole(Role role) {
 		this.role = role;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
 	}
 
 	@Override
