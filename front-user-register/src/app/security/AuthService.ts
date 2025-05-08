@@ -23,6 +23,11 @@ interface RegisterRequest {
   rol:string;
 }
 
+interface AuthResponse {
+  token: string;
+  role: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -57,9 +62,24 @@ export class AuthService {
         map(response => {
           if (response && response.token) {
             this.saveToken(response.token);
-            this.isAuthenticatedSubject.next(true);
-            console.log('Login successful, isAuthenticated is now true');
-            return true;
+            localStorage.setItem('role', response.role);
+
+            if (response.role === "ADMIN") {
+              this.isAuthenticatedSubject.next(true);
+              console.log('Login successful, isAuthenticated is now true');
+              return true;
+            }
+
+            if (response.role === "USER") {
+              this.isAuthenticatedSubject.next(true);
+              console.log('Login successful, isAuthenticated is now true');
+              return true;
+            }
+
+            this.removeToken();
+            this.isAuthenticatedSubject.next(false);
+            console.log('Login failed, role is not ADMIN or USER');
+            return false;
           } else {
             this.removeToken();
             this.isAuthenticatedSubject.next(false);

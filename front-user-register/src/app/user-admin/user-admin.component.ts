@@ -32,7 +32,14 @@ export class UserAdminComponent {
       .subscribe(
         (success) => {
           if (success) {
-            this.router.navigate(['/menu']);
+            const role = localStorage.getItem('role');
+            if (role === 'ADMIN') {
+              this.router.navigate(['/menuAdmin']);
+            } else {
+              this.loginError = true;
+              alert('Acceso denegado. Solo los administradores pueden ingresar.');
+              this.authService.logout();
+            }
             this.resetInpusLogin();
           } else {
             this.loginError = true;

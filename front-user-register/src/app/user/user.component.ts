@@ -32,7 +32,14 @@ export class UserComponent {
       .subscribe(
         (success) => {
           if (success) {
-            this.router.navigate(['/menu']);
+            const role = localStorage.getItem('role');
+            if (role === 'USER') {
+              this.router.navigate(['/menu']);
+            } else {
+              this.loginError = true;
+              alert('Acceso denegado. Solo los usuarios pueden ingresar.');
+              this.authService.logout();
+            }
             this.resetInpusLogin();
           } else {
             this.loginError = true;

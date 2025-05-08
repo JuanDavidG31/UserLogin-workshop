@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { provideHttpClient } from '@angular/common/http';
 
 import { UserComponent } from './user/user.component';
-import { TableComponent } from './table/table.component';
+import { MenuAdminComponent } from './menu-admin/menu-admin.component';
 import { UserAdminComponent } from './user-admin/user-admin.component';
 import { MenuComponent } from './menu/menu.component';
 import {HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -20,7 +20,7 @@ import { AuthInterceptor } from './security/AuthInterceptor';
   declarations: [
     AppComponent,
     UserComponent,
-    TableComponent,
+    MenuAdminComponent,
     UserAdminComponent,
     MenuComponent,
   ],
