@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,7 @@ import co.edu.unbosque.UserLoginBack.dto.UserDTO;
 import co.edu.unbosque.UserLoginBack.model.User;
 import co.edu.unbosque.UserLoginBack.security.JwtUtil;
 import co.edu.unbosque.UserLoginBack.service.UserService;
+import co.edu.unbosque.UserLoginBack.util.AESUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -48,6 +51,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @CrossOrigin(origins = { "http://localhost:8080", "http://localhost:8081", "http://localhost:8082" })
 @Tag(name = "Autenticación", description = "API para autenticación de usuarios (login y registro)")
 public class AuthController {
+	@Autowired
+	private UserService userServ;
 	/** Gestor de autenticación para validar credenciales de usuario. */
 
 	private final AuthenticationManager authenticationManager;
@@ -69,6 +74,17 @@ public class AuthController {
 		this.authenticationManager = authenticationManager;
 		this.jwtUtil = jwtUtil;
 		this.userService = userService;
+	}
+
+	@GetMapping("/showAllEncrypted")
+	public ResponseEntity<List<UserDTO>> showAllEncrypted() {
+		List<UserDTO> users = userServ.getAll();
+
+		if (users.isEmpty()) {
+			return new ResponseEntity<>(users, HttpStatus.NO_CONTENT);
+		} else {
+			return new ResponseEntity<>(users, HttpStatus.ACCEPTED);
+		}
 	}
 
 	@Operation(summary = "Subir un archivo")
@@ -183,7 +199,7 @@ public class AuthController {
 					userService.encrypt(loginRequest).getUser(), loginRequest.getPassword()));
 
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-			String jwt = jwtUtil.generateToken(userDetails);
+			String jwt = jwtUtil.generateToken(userDetails, AESUtil.encrypt(loginRequest.getUser()));
 
 			// Obtener el rol de userDetails si es nuestra clase User
 			String role = null;

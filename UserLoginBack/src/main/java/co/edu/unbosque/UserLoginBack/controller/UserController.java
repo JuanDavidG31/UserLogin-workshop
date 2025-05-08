@@ -57,7 +57,16 @@ public class UserController {
 	public UserController() {
 	}
 
+	@GetMapping("/showAllEncrypted")
+	public ResponseEntity<List<UserDTO>> showAllEncrypted() {
+		List<UserDTO> users = userServ.getAll();
 
+		if (users.isEmpty()) {
+			return new ResponseEntity<>(users, HttpStatus.NO_CONTENT);
+		} else {
+			return new ResponseEntity<>(users, HttpStatus.ACCEPTED);
+		}
+	}
 
 	@PutMapping(path = "/updatejson", consumes = MediaType.APPLICATION_JSON_VALUE)
 	ResponseEntity<String> updateNewWithJSON(@RequestParam Long id, @RequestBody UserDTO newUser) {
@@ -131,17 +140,6 @@ public class UserController {
 			return new ResponseEntity<>(found, HttpStatus.ACCEPTED);
 		} else {
 			return new ResponseEntity<>(new UserDTO(), HttpStatus.NOT_FOUND);
-		}
-	}
-
-	@GetMapping("/showAllEncrypted")
-	public ResponseEntity<List<UserDTO>> showAllEncrypted() {
-		List<UserDTO> users = userServ.getAll();
-
-		if (users.isEmpty()) {
-			return new ResponseEntity<>(users, HttpStatus.NO_CONTENT);
-		} else {
-			return new ResponseEntity<>(users, HttpStatus.ACCEPTED);
 		}
 	}
 

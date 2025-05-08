@@ -78,14 +78,14 @@ public class AESUtil {
 	}
 
 	public static String decrypt(String encrypted) {
-		String iv = "proyectUserdeaesk";
+		String iv = "proyectUserdeaes";
 		String key = "keywhitsecuredlk";
 		return decrypt(key, iv, encrypted);
 	}
 
 	public static String encrypt(String plainText) {
 
-		String iv = "proyectVirusdeaes";
+		String iv = "proyectUserdeaes";
 		String key = "keywhitsecuredlk";
 		return encrypt(key, iv, plainText);
 	}

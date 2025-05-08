@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService} from '../security/AuthService';
-import { HttpErrorResponse } from '@angular/common/http';
+import {HttpErrorResponse, HttpEvent} from '@angular/common/http';
 import { Router } from '@angular/router';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-menu',
@@ -10,18 +11,45 @@ import { Router } from '@angular/router';
   styleUrl: './menu.component.scss'
 })
 export class MenuComponent implements OnInit {
+  private objetoHttp: HttpClient;
   profilePicture: File | null = null;
   updateUsername: string = '';
   updatePassword: string = '';
   updateError: boolean = false;
   updateSuccess: boolean = false;
   currentUsername: string | null = null;
+  image='';
+  imagen='';
+  protected contenido: any;
 
-  constructor(private authService: AuthService,private router: Router) { }
+  constructor(private authService: AuthService,private router: Router,obj: HttpClient) {
+    this.objetoHttp = obj;
+  }
 
   ngOnInit(): void {
     const decodedToken = this.authService.getDecodedToken();
     this.currentUsername = decodedToken ? decodedToken.user : null;
+
+    if (!this.currentUsername) {
+      console.error('Token inválido o no disponible.');
+      return;
+    }
+
+    this.objetoHttp.get<any[]>('http://localhost:8081/auth/showAllEncrypted')
+      .subscribe(
+        (usuarios) => {
+          const usuarioLogueado = usuarios.find(u => u.user === this.currentUsername);
+          if (usuarioLogueado) {
+            this.image = usuarioLogueado.image;
+            this.imagen = this.authService.obtenerUrlArchivo(this.image);
+          } else {
+            console.warn('Usuario no encontrado en la lista');
+          }
+        },
+        (error) => {
+          console.error('Error al obtener usuarios:', error);
+        }
+      );
   }
 
   onFileSelected(event: any): void {
