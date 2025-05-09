@@ -20,12 +20,25 @@ export class MenuComponent implements OnInit {
   currentUsername: string | null = null;
   image='';
   imagen='';
+  mapa='';
+  address='';
   protected contenido: any;
 
   constructor(private authService: AuthService,private router: Router,obj: HttpClient) {
     this.objetoHttp = obj;
   }
-
+  traerMapa(): void {
+    this.authService.mostrarMapa(this.address).subscribe({
+      next: (response: any) => {
+        let parsed = typeof response === 'string' ? JSON.parse(response) : response;
+               this.mapa = parsed.mapUrl;
+        console.log('Link recibido');
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error al  obtenerel link:', error);
+      }
+    });
+  }
   ngOnInit(): void {
     const decodedToken = this.authService.getDecodedToken();
     this.currentUsername = decodedToken ? decodedToken.user : null;
@@ -42,6 +55,7 @@ export class MenuComponent implements OnInit {
           if (usuarioLogueado) {
             this.image = usuarioLogueado.image;
             this.imagen = this.authService.obtenerUrlArchivo(this.image);
+            this.address=usuarioLogueado.address;
           } else {
             console.warn('Usuario no encontrado en la lista');
           }

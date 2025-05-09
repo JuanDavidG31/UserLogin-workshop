@@ -38,7 +38,6 @@ public class ExternalHTTPRequestHandler {
             return JsonParser.parseString(geocodingResponse).getAsJsonObject();
         } catch (Exception e) {
             e.printStackTrace();
-            // Manejar la excepción apropiadamente
             return null;
         }
     }

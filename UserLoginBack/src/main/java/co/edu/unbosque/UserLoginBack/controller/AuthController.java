@@ -31,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import co.edu.unbosque.UserLoginBack.dto.UserDTO;
 import co.edu.unbosque.UserLoginBack.model.User;
 import co.edu.unbosque.UserLoginBack.security.JwtUtil;
+import co.edu.unbosque.UserLoginBack.service.ExternalHTTPRequestHandler;
 import co.edu.unbosque.UserLoginBack.service.UserService;
 import co.edu.unbosque.UserLoginBack.util.AESUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -53,6 +54,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class AuthController {
 	@Autowired
 	private UserService userServ;
+	
+	@Autowired
+	private ExternalHTTPRequestHandler googleMapsService;
 	/** Gestor de autenticación para validar credenciales de usuario. */
 
 	private final AuthenticationManager authenticationManager;
@@ -75,10 +79,18 @@ public class AuthController {
 		this.jwtUtil = jwtUtil;
 		this.userService = userService;
 	}
+	
+	@GetMapping("/map")
+	public ResponseEntity<?> getMapByAddress(@RequestParam String address) {
+		String mapImageUrl = googleMapsService.getMapForAddress(address);
+		return ResponseEntity.ok(Map.of("mapUrl", mapImageUrl, "message", "Url correcta.",
+				"success", true));
+	}
 
 	@GetMapping("/showAllEncrypted")
 	public ResponseEntity<List<UserDTO>> showAllEncrypted() {
 		List<UserDTO> users = userServ.getAll();
+		
 
 		if (users.isEmpty()) {
 			return new ResponseEntity<>(users, HttpStatus.NO_CONTENT);

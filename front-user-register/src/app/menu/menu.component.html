@@ -8,7 +8,7 @@
         </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" id="mapLink" data-bs-toggle="pill" data-bs-target="#emptySection" type="button" role="tab" aria-controls="emptySection" aria-selected="false">
+        <button class="nav-link" id="mapLink" data-bs-toggle="pill" data-bs-target="#emptySection" type="button" role="tab" aria-controls="emptySection" aria-selected="false" (click)="traerMapa()">
           <i class="bi bi-map me-2"></i> Mapa
         </button>
       </li>
@@ -95,6 +95,7 @@
       </section>
 
       <section class="tab-pane fade" id="emptySection" role="tabpanel" aria-labelledby="mapLink" tabindex="0">
+        <a *ngIf="mapa" [href]="mapa" target="_blank">Ver mapa</a>
 
       </section>
     </div>

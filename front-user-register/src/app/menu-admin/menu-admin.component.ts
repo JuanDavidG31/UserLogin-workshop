@@ -3,6 +3,7 @@ import { AuthService} from '../security/AuthService';
 import {HttpErrorResponse, HttpEvent} from '@angular/common/http';
 import { Router } from '@angular/router';
 import {HttpClient} from '@angular/common/http';
+import {UserComponent} from "../user/user.component";
 @Component({
   selector: 'app-menu-admin',
   standalone: false,
@@ -19,16 +20,31 @@ export class MenuAdminComponent implements OnInit{
   currentUsername: string | null = null;
   image='';
   imagen='';
+  mapa='';
+  address='';
+
   protected contenido: any;
 
   constructor(private authService: AuthService,private router: Router,obj: HttpClient) {
     this.objetoHttp = obj;
   }
+  traerMapa(): void {
+    this.authService.mostrarMapa(this.address).subscribe({
+      next: (response: any) => {
+        let parsed = typeof response === 'string' ? JSON.parse(response) : response;
+        
+        this.mapa = parsed.mapUrl;
+        console.log('Link recibido');
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error al obtener el link:', error);
+      }
+    });
+  }
 
   ngOnInit(): void {
     const decodedToken = this.authService.getDecodedToken();
     this.currentUsername = decodedToken ? decodedToken.user : null;
-
     if (!this.currentUsername) {
       console.error('Token inválido o no disponible.');
       return;
@@ -41,6 +57,8 @@ export class MenuAdminComponent implements OnInit{
           if (usuarioLogueado) {
             this.image = usuarioLogueado.image;
             this.imagen = this.authService.obtenerUrlArchivo(this.image);
+            this.address=usuarioLogueado.address;
+            console.log('direccion recibido:', this.address);
           } else {
             console.warn('Usuario no encontrado en la lista');
           }
@@ -103,4 +121,6 @@ export class MenuAdminComponent implements OnInit{
     this.updateUsername = '';
     this.updatePassword = '';
   }
+
+    protected readonly UserComponent = UserComponent;
 }

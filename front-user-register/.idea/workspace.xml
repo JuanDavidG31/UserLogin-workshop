@@ -5,8 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="59442de7-090f-4c70-b411-3784eb4461db" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../UserLoginBack/src/main/java/co/edu/unbosque/UserLoginBack/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../UserLoginBack/src/main/java/co/edu/unbosque/UserLoginBack/controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UserLoginBack/src/main/java/co/edu/unbosque/UserLoginBack/controller/GoogleMapsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../UserLoginBack/src/main/java/co/edu/unbosque/UserLoginBack/controller/GoogleMapsController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/menu-admin/menu-admin.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/menu-admin/menu-admin.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/menu-admin/menu-admin.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/menu-admin/menu-admin.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/menu/menu.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/menu/menu.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/menu/menu.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/menu/menu.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/security/AuthService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/security/AuthService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/user-admin/user-admin.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/user-admin/user-admin.component.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/user/user.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/user/user.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/user/user.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/user/user.component.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,7 +45,7 @@
     &quot;nodejs_interpreter_path&quot;: &quot;C:/WebStorm-2024.1.2.win/node-v20.12.2Portable/node-v20.12.2Portable/node&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;npm.Angular CLI Server.executor&quot;: &quot;Run&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;watcher.settings&quot;,
     &quot;ts.external.directory.path&quot;: &quot;D:\\Gits Programación 2\\Taller usuarios\\UserLogin-workshop\\front-user-register\\node_modules\\typescript\\lib&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
@@ -76,6 +85,8 @@
       <workItem from="1746327236618" duration="419000" />
       <workItem from="1746337928244" duration="1875000" />
       <workItem from="1746340116094" duration="587000" />
+      <workItem from="1746678226250" duration="584000" />
+      <workItem from="1746746170681" duration="7360000" />
     </task>
     <servers />
   </component>

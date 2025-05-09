@@ -8,10 +8,11 @@
         </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" id="mapLink" data-bs-toggle="pill" data-bs-target="#emptySection" type="button" role="tab" aria-controls="emptySection" aria-selected="false">
+        <button class="nav-link" id="mapLink" data-bs-toggle="pill" data-bs-target="#emptySection" type="button" role="tab" aria-controls="emptySection" aria-selected="false" (click)="traerMapa()">
           <i class="bi bi-map me-2"></i> Mapa
         </button>
       </li>
+
       <li class="nav-item mb-2" role="presentation">
         <button class="nav-link active" id="profilePhotoLink" data-bs-toggle="pill" data-bs-target="#profilePhotoSection" type="button" role="tab" aria-controls="profilePhotoSection" aria-selected="true">
           <i class="bi bi-camera-fill me-2"></i> Subir Foto de Perfil
@@ -98,7 +99,8 @@
       </section>
 
       <section class="tab-pane fade" id="emptySection" role="tabpanel" aria-labelledby="mapLink" tabindex="0">
-
+        <h5>Hola</h5>
+        <a *ngIf="mapa" [href]="mapa" target="_blank">Ver mapa</a>
       </section>
     </div>
   </main>

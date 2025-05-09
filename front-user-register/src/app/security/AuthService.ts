@@ -37,6 +37,7 @@ export class AuthService {
   private apiUrlUpdate = 'http://localhost:8081/user/updatejson';
   private apiUrlSubirArchivo = 'http://localhost:8081/auth/subir-archivo';
   private apiUrlObtenerArchivoBase = 'http://localhost:8081/auth/archivo';
+  private apiMaps='http://localhost:8081/auth/map';
   private tokenKey = 'authToken';
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasToken());
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
@@ -44,7 +45,10 @@ export class AuthService {
   constructor(private http: HttpClient) {
     console.log('Initial isAuthenticated:', this.hasToken());
   }
-
+mostrarMapa(address: string): Observable<any> {
+  const params = new HttpParams().set('address', address);
+  return this.http.get(this.apiMaps, { params, responseType: 'text' });
+}
   subirArchivo(file: File): Observable<any> {
     const formData = new FormData();
     formData.append("archivo", file);

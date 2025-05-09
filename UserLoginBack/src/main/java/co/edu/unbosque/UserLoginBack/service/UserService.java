@@ -119,8 +119,13 @@ public class UserService implements CRUDOperation<UserDTO, User> {
 		List<User> entityList = userRepo.findAll();
 		List<UserDTO> dtoList = new ArrayList<>();
 		entityList.forEach((entity) -> {
-
 			UserDTO dto = modelMapper.map(entity, UserDTO.class);
+			
+			if (dto.getAddress()!=null) {
+				dto.setAddress(AESUtil.decrypt(dto.getAddress()));
+			}
+			
+			
 			dtoList.add(dto);
 		});
 

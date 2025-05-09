@@ -22,9 +22,13 @@ export class UserComponent {
   country = '';
   address = '';
   image='';
+
   imagen: File | null = null;
 
-  constructor(private router: Router, private authService: AuthService) { }
+  constructor(private router: Router, protected authService: AuthService) { }
+
+
+
 
   iniciarSesion() {
     this.loginError = false;
@@ -40,7 +44,7 @@ export class UserComponent {
               alert('Acceso denegado. Solo los usuarios pueden ingresar.');
               this.authService.logout();
             }
-            this.resetInpusLogin();
+            this.resetInputsLogin();
           } else {
             this.loginError = true;
           }
@@ -72,8 +76,8 @@ export class UserComponent {
           this.registrarUsuario();
         },
         error: (error: HttpErrorResponse) => {
-          alert('Error al subir la imagen.');
-          console.error('Error al subir la imagen:', error);
+          alert('Error al cargar la imagen.');
+          console.error('Error al cargar la imagen:', error);
           this.registrationError = true;
         },
       });
@@ -97,7 +101,7 @@ export class UserComponent {
         alert('Usuario Creado con éxito');
         console.log('Respuesta del backend al crear cuenta:', response);
         this.registrationSuccess = true;
-        this.resetInpusCreate();
+        this.resetInputsCreate();
       },
       error: (error: HttpErrorResponse) => {
         alert('No se pudo crear el usuario');
@@ -116,13 +120,13 @@ export class UserComponent {
     });
   }
 
-  resetInpusLogin() {
+  resetInputsLogin() {
     this.user = '';
     this.password = '';
     this.loginError = false;
   }
 
-  resetInpusCreate() {
+  resetInputsCreate() {
     this.name = '';
     this.cedula = '';
     this.username = '';
