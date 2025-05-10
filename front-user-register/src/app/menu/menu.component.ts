@@ -45,7 +45,7 @@ export class MenuComponent implements OnInit {
       return;
     }
 
-    this.authService.getAllUsers().subscribe( // Utiliza la función del AuthService
+    this.authService.getAllUsers().subscribe(
       (usuarios) => {
         const usuarioLogueado = usuarios.find(u => u.user === this.currentUsername);
         if (usuarioLogueado) {

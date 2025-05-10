@@ -11,7 +11,6 @@ import {UserComponent} from "../user/user.component";
   styleUrl: './menu-admin.component.scss'
 })
 export class MenuAdminComponent implements OnInit{
-  private objetoHttp: HttpClient;
   profilePicture: File | null = null;
   updateUsername: string = '';
   updatePassword: string = '';
@@ -23,21 +22,17 @@ export class MenuAdminComponent implements OnInit{
   mapa='';
   address='';
 
-  protected contenido: any;
+  constructor(private authService: AuthService, private router: Router) { }
 
-  constructor(private authService: AuthService,private router: Router,obj: HttpClient) {
-    this.objetoHttp = obj;
-  }
   traerMapa(): void {
     this.authService.mostrarMapa(this.address).subscribe({
       next: (response: any) => {
         let parsed = typeof response === 'string' ? JSON.parse(response) : response;
-        
-        this.mapa = parsed.mapUrl;
-        console.log('Link recibido');
+        this.mapa = parsed.mapa;
+        console.log('Link recibido', this.mapa);
       },
       error: (error: HttpErrorResponse) => {
-        console.error('Error al obtener el link:', error);
+        console.error('Error al  obtenerel link:', error);
       }
     });
   }
@@ -45,28 +40,27 @@ export class MenuAdminComponent implements OnInit{
   ngOnInit(): void {
     const decodedToken = this.authService.getDecodedToken();
     this.currentUsername = decodedToken ? decodedToken.user : null;
+
     if (!this.currentUsername) {
       console.error('Token inválido o no disponible.');
       return;
     }
 
-    this.objetoHttp.get<any[]>('http://localhost:8081/auth/showAllEncrypted')
-      .subscribe(
-        (usuarios) => {
-          const usuarioLogueado = usuarios.find(u => u.user === this.currentUsername);
-          if (usuarioLogueado) {
-            this.image = usuarioLogueado.image;
-            this.imagen = this.authService.obtenerUrlArchivo(this.image);
-            this.address=usuarioLogueado.address;
-            console.log('direccion recibido:', this.address);
-          } else {
-            console.warn('Usuario no encontrado en la lista');
-          }
-        },
-        (error) => {
-          console.error('Error al obtener usuarios:', error);
+    this.authService.getAllUsers().subscribe(
+      (usuarios) => {
+        const usuarioLogueado = usuarios.find(u => u.user === this.currentUsername);
+        if (usuarioLogueado) {
+          this.image = usuarioLogueado.image;
+          this.imagen = this.authService.obtenerUrlArchivo(this.image);
+          this.address = usuarioLogueado.address;
+        } else {
+          console.warn('Usuario no encontrado en la lista');
         }
-      );
+      },
+      (error) => {
+        console.error('Error al obtener usuarios:', error);
+      }
+    );
   }
 
   onFileSelected(event: any): void {
@@ -114,13 +108,11 @@ export class MenuAdminComponent implements OnInit{
 
   logout(): void {
     this.authService.logout();
-    this.router.navigate(['/user']);
+    this.router.navigate(['/loginAdmin']);
   }
 
   resetUpdateForm(): void {
     this.updateUsername = '';
     this.updatePassword = '';
   }
-
-    protected readonly UserComponent = UserComponent;
 }
