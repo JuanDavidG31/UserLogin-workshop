@@ -120,12 +120,11 @@ public class UserService implements CRUDOperation<UserDTO, User> {
 		List<UserDTO> dtoList = new ArrayList<>();
 		entityList.forEach((entity) -> {
 			UserDTO dto = modelMapper.map(entity, UserDTO.class);
-			
-			if (dto.getAddress()!=null) {
+
+			if (dto.getAddress() != null) {
 				dto.setAddress(AESUtil.decrypt(dto.getAddress()));
 			}
-			
-			
+
 			dtoList.add(dto);
 		});
 
@@ -160,9 +159,27 @@ public class UserService implements CRUDOperation<UserDTO, User> {
 
 		if (found.isPresent() && !newFound.isPresent()) {
 			User temp = found.get();
-			temp.setUser(newData.getUser());
-			// Hash the password before saving
-			temp.setPassword(passwordEncoder.encode(newData.getPassword()));
+			if (temp.getUser() != null) {
+				temp.setUser(newData.getUser());
+			}
+			if (temp.getPassword() != null) {
+				temp.setPassword(passwordEncoder.encode(newData.getPassword()));
+			}
+			if (temp.getAddress() != null) {
+				temp.setAddress(newData.getAddress());
+			}
+			if (temp.getCedula() != null) {
+				temp.setCedula(newData.getCedula());
+			}
+			if (temp.getCoutry() != null) {
+				temp.setCoutry(newData.getCoutry());
+			}
+			if (temp.getImage() != null) {
+				temp.setImage(newData.getImage());
+			}
+			if (temp.getName() != null) {
+				temp.setName(newData.getName());
+			}
 			userRepo.save(temp);
 			return 0;
 		}
