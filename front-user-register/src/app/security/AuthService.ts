@@ -37,7 +37,8 @@ export class AuthService {
   private apiUrlUpdate = 'http://localhost:8081/user/updatejson';
   private apiUrlSubirArchivo = 'http://localhost:8081/auth/subir-archivo';
   private apiUrlObtenerArchivoBase = 'http://localhost:8081/auth/archivo';
-  private apiMaps='http://localhost:8081/auth/map';
+  private apiMaps='http://localhost:8081/map/map';
+  private apiUrlUser = 'http://localhost:8081/user';
   private tokenKey = 'authToken';
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasToken());
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
@@ -45,15 +46,33 @@ export class AuthService {
   constructor(private http: HttpClient) {
     console.log('Initial isAuthenticated:', this.hasToken());
   }
-mostrarMapa(address: string): Observable<any> {
-  const params = new HttpParams().set('address', address);
-  return this.http.get(this.apiMaps, { params, responseType: 'text' });
-}
+
+  private createAuthHeaders(): HttpHeaders {
+    const token = this.getToken();
+    if (token) {
+      return new HttpHeaders({
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      });
+    }
+    return new HttpHeaders({ 'Content-Type': 'application/json' });
+  }
+
+  getAllUsers(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrlUser}/showAllEncrypted`, { headers: this.createAuthHeaders() });
+  }
+
+  mostrarMapa(address: string): Observable<any> {
+    const params = new HttpParams().set('address', address);
+    return this.http.get(this.apiMaps, { params, responseType: 'text', headers: this.createAuthHeaders() });
+  }
+
   subirArchivo(file: File): Observable<any> {
     const formData = new FormData();
     formData.append("archivo", file);
-
-    return this.http.post(this.apiUrlSubirArchivo, formData);
+    const token = this.getToken();
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
+    return this.http.post(this.apiUrlSubirArchivo, formData, { headers });
   }
 
   obtenerUrlArchivo(nombreArchivo: string): string {
@@ -112,10 +131,7 @@ mostrarMapa(address: string): Observable<any> {
       return new Observable(observer => observer.error('No user ID found in token'));
     }
 
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    });
+    const headers = this.createAuthHeaders();
 
     return this.http.put(`${this.apiUrlUpdate}?id=${userId}`, userData, { headers });
   }

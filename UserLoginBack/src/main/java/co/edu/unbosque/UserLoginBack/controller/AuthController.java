@@ -52,11 +52,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @CrossOrigin(origins = { "http://localhost:8080", "http://localhost:8081", "http://localhost:8082" })
 @Tag(name = "Autenticación", description = "API para autenticación de usuarios (login y registro)")
 public class AuthController {
-	@Autowired
-	private UserService userServ;
-	
-	@Autowired
-	private ExternalHTTPRequestHandler googleMapsService;
+
 	/** Gestor de autenticación para validar credenciales de usuario. */
 
 	private final AuthenticationManager authenticationManager;
@@ -78,25 +74,6 @@ public class AuthController {
 		this.authenticationManager = authenticationManager;
 		this.jwtUtil = jwtUtil;
 		this.userService = userService;
-	}
-	
-	@GetMapping("/map")
-	public ResponseEntity<?> getMapByAddress(@RequestParam String address) {
-		String mapImageUrl = googleMapsService.getMapForAddress(address);
-		return ResponseEntity.ok(Map.of("mapUrl", mapImageUrl, "message", "Url correcta.",
-				"success", true));
-	}
-
-	@GetMapping("/showAllEncrypted")
-	public ResponseEntity<List<UserDTO>> showAllEncrypted() {
-		List<UserDTO> users = userServ.getAll();
-		
-
-		if (users.isEmpty()) {
-			return new ResponseEntity<>(users, HttpStatus.NO_CONTENT);
-		} else {
-			return new ResponseEntity<>(users, HttpStatus.ACCEPTED);
-		}
 	}
 
 	@Operation(summary = "Subir un archivo")

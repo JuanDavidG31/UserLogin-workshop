@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService} from '../security/AuthService';
-import {HttpErrorResponse, HttpEvent} from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-menu',
@@ -11,7 +10,6 @@ import {HttpClient} from '@angular/common/http';
   styleUrl: './menu.component.scss'
 })
 export class MenuComponent implements OnInit {
-  private objetoHttp: HttpClient;
   profilePicture: File | null = null;
   updateUsername: string = '';
   updatePassword: string = '';
@@ -22,23 +20,22 @@ export class MenuComponent implements OnInit {
   imagen='';
   mapa='';
   address='';
-  protected contenido: any;
 
-  constructor(private authService: AuthService,private router: Router,obj: HttpClient) {
-    this.objetoHttp = obj;
-  }
+  constructor(private authService: AuthService, private router: Router) { }
+
   traerMapa(): void {
     this.authService.mostrarMapa(this.address).subscribe({
       next: (response: any) => {
         let parsed = typeof response === 'string' ? JSON.parse(response) : response;
-               this.mapa = parsed.mapUrl;
-        console.log('Link recibido');
+        this.mapa = parsed.mapa;
+        console.log('Link recibido', this.mapa);
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error al  obtenerel link:', error);
       }
     });
   }
+
   ngOnInit(): void {
     const decodedToken = this.authService.getDecodedToken();
     this.currentUsername = decodedToken ? decodedToken.user : null;
@@ -48,22 +45,21 @@ export class MenuComponent implements OnInit {
       return;
     }
 
-    this.objetoHttp.get<any[]>('http://localhost:8081/auth/showAllEncrypted')
-      .subscribe(
-        (usuarios) => {
-          const usuarioLogueado = usuarios.find(u => u.user === this.currentUsername);
-          if (usuarioLogueado) {
-            this.image = usuarioLogueado.image;
-            this.imagen = this.authService.obtenerUrlArchivo(this.image);
-            this.address=usuarioLogueado.address;
-          } else {
-            console.warn('Usuario no encontrado en la lista');
-          }
-        },
-        (error) => {
-          console.error('Error al obtener usuarios:', error);
+    this.authService.getAllUsers().subscribe( // Utiliza la función del AuthService
+      (usuarios) => {
+        const usuarioLogueado = usuarios.find(u => u.user === this.currentUsername);
+        if (usuarioLogueado) {
+          this.image = usuarioLogueado.image;
+          this.imagen = this.authService.obtenerUrlArchivo(this.image);
+          this.address = usuarioLogueado.address;
+        } else {
+          console.warn('Usuario no encontrado en la lista');
         }
-      );
+      },
+      (error) => {
+        console.error('Error al obtener usuarios:', error);
+      }
+    );
   }
 
   onFileSelected(event: any): void {
@@ -111,7 +107,7 @@ export class MenuComponent implements OnInit {
 
   logout(): void {
     this.authService.logout();
-    this.router.navigate(['/user']);
+    this.router.navigate(['/login']);
   }
 
   resetUpdateForm(): void {
