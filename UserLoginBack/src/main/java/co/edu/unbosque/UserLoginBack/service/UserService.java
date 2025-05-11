@@ -165,21 +165,13 @@ public class UserService implements CRUDOperation<UserDTO, User> {
 			if (temp.getPassword() != null) {
 				temp.setPassword(passwordEncoder.encode(newData.getPassword()));
 			}
-			if (temp.getAddress() != null) {
-				temp.setAddress(newData.getAddress());
-			}
-			if (temp.getCedula() != null) {
-				temp.setCedula(newData.getCedula());
-			}
-			if (temp.getCoutry() != null) {
-				temp.setCoutry(newData.getCoutry());
-			}
-			if (temp.getImage() != null) {
-				temp.setImage(newData.getImage());
-			}
-			if (temp.getName() != null) {
-				temp.setName(newData.getName());
-			}
+			/*
+			 * if (temp.getAddress() != null) { temp.setAddress(newData.getAddress()); } if
+			 * (temp.getCedula() != null) { temp.setCedula(newData.getCedula()); } if
+			 * (temp.getCoutry() != null) { temp.setCoutry(newData.getCoutry()); } if
+			 * (temp.getImage() != null) { temp.setImage(newData.getImage()); } if
+			 * (temp.getName() != null) { temp.setName(newData.getName()); }
+			 */
 			userRepo.save(temp);
 			return 0;
 		}
