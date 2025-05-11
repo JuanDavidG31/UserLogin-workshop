@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -32,9 +32,10 @@ interface AuthResponse {
   providedIn: 'root'
 })
 export class AuthService {
+  private currentUsername: string | null = null;
   private apiUrlLogin = 'http://localhost:8081/auth/login';
   private apiUrlRegister = 'http://localhost:8081/auth/register';
-  private apiUrlUpdate = 'http://localhost:8081/user/updatejson';
+  private apiUrlUpdate = 'http://localhost:8081/user/update';
   private apiUrlSubirArchivo = 'http://localhost:8081/auth/subir-archivo';
   private apiUrlObtenerArchivoBase = 'http://localhost:8081/auth/archivo';
   private apiMaps='http://localhost:8081/map/map';
@@ -118,7 +119,7 @@ export class AuthService {
     return this.http.post(this.apiUrlRegister, userData, { params });
   }
 
-  updateUser(userData: UpdateUserRequest): Observable<any> {
+  updateUser(user?: string, password?: string): Observable<any> {
     const token = this.getToken();
     if (!token) {
       console.error('No token available for update.');
@@ -131,9 +132,17 @@ export class AuthService {
       return new Observable(observer => observer.error('No user ID found in token'));
     }
 
+    let params = new HttpParams().set('id', userId);
+    if (user) {
+      params = params.set('newUsername', user);
+    }
+    if (password) {
+      params = params.set('newPassword', password);
+    }
+
     const headers = this.createAuthHeaders();
 
-    return this.http.put(`${this.apiUrlUpdate}?id=${userId}`, userData, { headers });
+    return this.http.put(`${this.apiUrlUpdate}`, {}, { headers, params });
   }
 
   logout(): void {

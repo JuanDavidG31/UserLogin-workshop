@@ -88,7 +88,7 @@ export class MenuAdminComponent implements OnInit{
     }
 
     if (Object.keys(updateData).length > 0) {
-      this.authService.updateUser(updateData)
+      this.authService.updateUser(this.updateUsername, this.updatePassword)
         .subscribe(
           (response) => {
             console.log('Usuario actualizado correctamente:', response);
