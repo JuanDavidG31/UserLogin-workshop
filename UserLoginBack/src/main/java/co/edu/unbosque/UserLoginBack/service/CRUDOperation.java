@@ -19,4 +19,6 @@ public interface CRUDOperation<T, E> {
 	public E encrypt(T data);
 
 	public String decrypt(T data);
+
+	public int updateUserAndPassword(Long id, T newData);
 }

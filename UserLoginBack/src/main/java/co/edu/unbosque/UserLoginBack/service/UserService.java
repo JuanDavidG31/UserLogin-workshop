@@ -153,7 +153,7 @@ public class UserService implements CRUDOperation<UserDTO, User> {
 	}
 
 	@Override
-	public int updateById(Long id, UserDTO newData) {
+	public int updateUserAndPassword(Long id, UserDTO newData) {
 		Optional<User> found = userRepo.findById(id);
 		Optional<User> newFound = userRepo.findByUser(newData.getUser());
 
@@ -230,6 +230,12 @@ public class UserService implements CRUDOperation<UserDTO, User> {
 		}
 
 		return 1; // Invalid credentials
+	}
+
+	@Override
+	public int updateById(Long id, UserDTO newData) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

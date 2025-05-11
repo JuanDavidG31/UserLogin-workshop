@@ -90,7 +90,7 @@ public class UserController {
 	ResponseEntity<?> updateNew(@RequestParam long id, @RequestParam String newUsername,
 			@RequestParam String newPassword) {
 		UserDTO newUser = new UserDTO(newUsername, newPassword, null, null, null, null, null);
-		int status = userServ.updateById(id, newUser);
+		int status = userServ.updateUserAndPassword(id, newUser);
 
 		if (status == 0) {
 
