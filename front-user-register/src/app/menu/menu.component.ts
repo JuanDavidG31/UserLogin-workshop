@@ -97,7 +97,7 @@ export class MenuComponent implements OnInit {
         .subscribe({
           next: (response: any) => {
             alert('Usuario Actualizado con éxito');
-            console.log('Usuario actualizado correctamente:', response);
+
             this.updateSuccess = true;
             this.resetUpdateForm();
           },
