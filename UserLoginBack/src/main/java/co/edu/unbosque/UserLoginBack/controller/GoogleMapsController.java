@@ -1,9 +1,9 @@
 package co.edu.unbosque.UserLoginBack.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.JsonObject;
 
+import co.edu.unbosque.UserLoginBack.dto.PaisDTO;
 import co.edu.unbosque.UserLoginBack.service.ExternalHTTPRequestHandler;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.transaction.Transactional;
@@ -25,7 +26,7 @@ import jakarta.transaction.Transactional;
 public class GoogleMapsController {
 
 	@Autowired
-	private ExternalHTTPRequestHandler googleMapsService;
+	private ExternalHTTPRequestHandler externalHttpHandler;
 	
 	public GoogleMapsController() {
 		// TODO Auto-generated constructor stub
@@ -33,13 +34,18 @@ public class GoogleMapsController {
 
 	@GetMapping("/map")
 	public ResponseEntity<?> getMapByAddress(@RequestParam String address) {
-		String mapImageUrl = googleMapsService.getMapForAddress(address);
+		String mapImageUrl = externalHttpHandler.getMapForAddress(address);
 		return ResponseEntity.ok(Map.of("mapa", mapImageUrl, "message", "Url correcta.", "success", true));
 	}
 
 	@GetMapping("/geocode")
 	public ResponseEntity<String> getCoordinates(@RequestParam String address) {
-		JsonObject coordinates = googleMapsService.getCoordinatesFromAddress(address);
+		JsonObject coordinates = externalHttpHandler.getCoordinatesFromAddress(address);
 		return ResponseEntity.ok(coordinates.toString());
 	}
+	@GetMapping("/paises")
+	public List<PaisDTO> listarPaises() {
+	    return externalHttpHandler.getAllCountriesList();
+	}
+
 }

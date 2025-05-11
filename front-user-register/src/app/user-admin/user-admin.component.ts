@@ -24,8 +24,26 @@ export class UserAdminComponent {
   image='';
   map='';
   imagen: File | null = null;
+  paises: string[] = [];
+
+  ngOnInit(): void {
+    this.cargarPaises();
+  }
 
   constructor(private router: Router, private authService: AuthService) { }
+
+  cargarPaises(): void {
+    this.authService.getPaises().subscribe({
+      next: (data) => {
+        this.paises = data.map(p => p.nombre);
+        console.log('Países cargados:', this.paises);
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error al cargar países:', error);
+      }
+    });
+  }
+
   traerMapa(): string {
     this.authService.mostrarMapa('portal 80').subscribe({
       next: (respuesta: string) => {
@@ -38,6 +56,9 @@ export class UserAdminComponent {
     });
     return this.map;
   }
+
+
+
   iniciarSesion() {
     this.loginError = false;
     this.authService.login({ user: this.user, password: this.password })

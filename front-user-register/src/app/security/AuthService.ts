@@ -42,12 +42,19 @@ export class AuthService {
   private apiMaps='http://localhost:8081/map/map';
   private apiUrlUser = 'http://localhost:8081/user';
   private tokenKey = 'authToken';
+  private apiUrlPaises='http://localhost:8081/map/paises';
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasToken());
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
   constructor(private http: HttpClient) {
     console.log('Initial isAuthenticated:', this.hasToken());
   }
+  getPaises(): Observable<{ nombre: string }[]> {
+
+    return this.http.get<{ nombre: string }[]>(this.apiUrlPaises,{headers: this.createAuthHeaders()});
+
+  }
+
 
   private createAuthHeaders(): HttpHeaders {
     const token = this.getToken();

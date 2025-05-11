@@ -87,20 +87,13 @@
               [(ngModel)]="tPassword" />
           </div>
           <div class="mb-3">
-            <label for="country" class="form-label">País de Origen</label>
+            <label class="form-label">País de Origen</label>
             <select
-              id="country"
-              name="country"
-              class="form-select"
-              required
-              [(ngModel)]="country"
-            >
-              <option disabled selected value="">Seleccione un país</option>
-              <option value="Colombia">Colombia</option>
-              <option value="México">México</option>
-              <option value="Argentina">Argentina</option>
-              <option value="España">España</option>
 
+              name="country" class="form-select"
+              [(ngModel)]="country" id="pais"
+            >
+              <option *ngFor="let pais of paises" [value]="pais">{{ pais }}</option>
             </select>
           </div>
           <div class="mb-3">

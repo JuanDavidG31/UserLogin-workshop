@@ -22,12 +22,27 @@ export class UserComponent {
   country = '';
   address = '';
   image='';
+  paises: string[] = [];
+
 
   imagen: File | null = null;
 
+  ngOnInit(): void {
+    this.cargarPaises();
+  }
   constructor(private router: Router, protected authService: AuthService) { }
 
-
+  cargarPaises(): void {
+    this.authService.getPaises().subscribe({
+      next: (data) => {
+        this.paises = data.map(p => p.nombre);
+        console.log('Países cargados:', this.paises);
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error al cargar países:', error);
+      }
+    });
+  }
 
 
   iniciarSesion() {
