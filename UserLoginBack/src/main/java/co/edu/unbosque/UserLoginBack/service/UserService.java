@@ -52,11 +52,14 @@ public class UserService implements CRUDOperation<UserDTO, User> {
 			return 1;
 		}
 
+		if (!isValidCedula(entity.getCedula())) {
+			throw new IllegalArgumentException("La cédula debe tener exacta y únicamente 10 caracteres numéricos.");
+		}
+
 		if (!isValidPassword(entity.getPassword())) {
 			throw new IllegalArgumentException("La contraseña no cumple con el estándar "
-					+ "(mínimo 8 caracteres, al menos una letra minúscula, " + "al menos una letra mayúscula, "
+					+ "(mínimo 8 caracteres, al menos una letra minúscula, al menos una letra mayúscula, "
 					+ "al menos un número y al menos un símbolo que no sea < > :).");
-
 		}
 
 		if (findUsernameAlreadyTaken(entity)) {
@@ -82,27 +85,47 @@ public class UserService implements CRUDOperation<UserDTO, User> {
 		}
 	}
 
+	private boolean isValidCedula(String cedula) {
+		if (cedula.length() != 10) {
+			return false;
+		}
+
+		for (char ch : cedula.toCharArray()) {
+			if (!Character.isDigit(ch)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	private boolean isValidPassword(String password) {
 		if (password.length() < 8) {
 			return false;
 		}
+
 		boolean hasLower = false;
 		boolean hasUpper = false;
 		boolean hasDigit = false;
-		boolean hasSymbol = false;
+		boolean hasValidSymbol = false;
+
+		String disallowedSymbols = "<>&\"'/= ";
 
 		for (char ch : password.toCharArray()) {
-			if (Character.isLowerCase(ch))
+			if (Character.isLowerCase(ch)) {
 				hasLower = true;
-			else if (Character.isUpperCase(ch))
+			} else if (Character.isUpperCase(ch)) {
 				hasUpper = true;
-			else if (Character.isDigit(ch))
+			} else if (Character.isDigit(ch)) {
 				hasDigit = true;
-			else if ("<>:".indexOf(ch) == -1 && !Character.isLetterOrDigit(ch))
-				hasSymbol = true;
+			} else if (disallowedSymbols.indexOf(ch) != -1) {
+				return false;
+			} else {
+				hasValidSymbol = true;
+			}
 		}
 
-		return hasLower && hasUpper && hasDigit && hasSymbol;
+		return hasLower && hasUpper && hasDigit && hasValidSymbol;
 	}
 
 	@Override
@@ -289,10 +312,10 @@ public class UserService implements CRUDOperation<UserDTO, User> {
 	}
 
 	public int validateCredentials(String username, String password) {
-		// Find user by username
+// Find user by username
 		Optional<User> userOpt = userRepo.findByUser(username);
 
-		// Check if user exists and password matches
+// Check if user exists and password matches
 		if (userOpt.isPresent()) {
 			User user = userOpt.get();
 			if (passwordEncoder.matches(password, user.getPassword())) {
@@ -305,7 +328,7 @@ public class UserService implements CRUDOperation<UserDTO, User> {
 
 	@Override
 	public int updateById(Long id, UserDTO newData) {
-		// TODO Auto-generated method stub
+// TODO Auto-generated method stub
 		return 0;
 	}
 
