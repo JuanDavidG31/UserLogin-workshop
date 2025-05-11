@@ -13,4 +13,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	public void deleteByUser(String user);
 
 	public Optional<User> findByCedula(String cedula);
+
+	public Optional<User> findByImage(String image);
 }

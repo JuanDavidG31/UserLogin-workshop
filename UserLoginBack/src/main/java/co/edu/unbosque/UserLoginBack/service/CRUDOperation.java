@@ -21,4 +21,6 @@ public interface CRUDOperation<T, E> {
 	public String decrypt(T data);
 
 	public int updateUserAndPassword(Long id, T newData);
+	public int updateImage(Long id, T newData);
+
 }

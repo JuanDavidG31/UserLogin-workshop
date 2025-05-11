@@ -36,7 +36,7 @@
       <section class="tab-pane fade show active" id="profilePhotoSection" role="tabpanel" aria-labelledby="profilePhotoLink" tabindex="0">
         <div class="card shadow-sm p-4 mb-5">
           <h2 class="mb-4 text-center">Subir Foto de Perfil</h2>
-          <form id="uploadProfilePhotoForm" autocomplete="off" novalidate (ngSubmit)="onSubmitProfilePhotoForm()">
+          <div id="uploadProfilePhotoForm" autocomplete="off" novalidate>
             <div class="mb-3">
               <label for="profilePicture" class="form-label">Selecciona una imagen</label>
               <input
@@ -49,8 +49,8 @@
                 (change)="onFileSelected($event)"
               />
             </div>
-            <button type="submit" class="btn btn-primary w-100">Subir Foto</button>
-          </form>
+            <button type="button" class="btn btn-primary w-100" (click)="actualizarFotoPerfil()" [disabled]="!profilePicture">Actualizar Foto</button>
+          </div>
         </div>
       </section>
 

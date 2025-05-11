@@ -38,6 +38,7 @@ export class AuthService {
   private apiUrlUpdate = 'http://localhost:8081/user/update';
   private apiUrlSubirArchivo = 'http://localhost:8081/auth/subir-archivo';
   private apiUrlObtenerArchivoBase = 'http://localhost:8081/auth/archivo';
+  private apiUrlActualizarFotoPerfil = 'http://localhost:8081/user/actualizar-foto-perfil';
   private apiMaps='http://localhost:8081/map/map';
   private apiUrlUser = 'http://localhost:8081/user';
   private tokenKey = 'authToken';
@@ -144,6 +145,16 @@ export class AuthService {
     }
 
     return this.http.put(`${this.apiUrlUpdate}`, null, { params, headers: this.createAuthHeaders() });
+  }
+
+  actualizarFotoDePerfil(id: number, archivo: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('id', String(id));
+    formData.append('archivo', archivo);
+
+    return this.http.post(this.apiUrlActualizarFotoPerfil, formData, {
+      headers: this.createAuthHeaders()
+    });
   }
 
 

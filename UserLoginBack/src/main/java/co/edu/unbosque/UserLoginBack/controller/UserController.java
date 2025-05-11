@@ -59,6 +59,54 @@ public class UserController {
 	public UserController() {
 	}
 
+	@PostMapping(value = "/actualizar-foto-perfil", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<?> actualizarFotoPerfil(@RequestParam Long id,
+			@Parameter(description = "Nueva foto de perfil", required = true, name = "archivo", content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE)) @RequestParam("archivo") MultipartFile archivo) {
+		if (archivo.isEmpty()) {
+			return ResponseEntity.badRequest()
+					.body(Map.of("message", "Por favor, selecciona una foto de perfil para subir.", "success", false));
+		}
+
+		try {
+			String home = System.getProperty("user.home");
+			Path carpetaDestinoPath = Paths.get(home, "archivos-subidos");
+			if (!Files.exists(carpetaDestinoPath)) {
+				Files.createDirectories(carpetaDestinoPath);
+			}
+
+			String nombreOriginal = archivo.getOriginalFilename();
+			String extension = "";
+			int puntoIndex = nombreOriginal.lastIndexOf('.');
+			if (puntoIndex > 0 && puntoIndex < nombreOriginal.length() - 1) {
+				extension = nombreOriginal.substring(puntoIndex);
+			}
+			String nombreAleatorio = UUID.randomUUID().toString() + extension;
+			Path archivoDestinoPath = carpetaDestinoPath.resolve(nombreAleatorio);
+
+			Files.copy(archivo.getInputStream(), archivoDestinoPath);
+
+			UserDTO userDTO = new UserDTO();
+			userDTO.setImage(nombreAleatorio);
+			int resultado = userServ.updateImage(id, userDTO);
+
+			if (resultado == 0) {
+				return ResponseEntity.ok(Map.of("nombreArchivo", nombreAleatorio, "message",
+						"Foto de perfil actualizada exitosamente.", "success", true));
+			} else if (resultado == 2) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND)
+						.body(Map.of("message", "No se encontró el usuario con ID: " + id, "success", false));
+			} else {
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+						Map.of("message", "Error al actualizar la foto de perfil del usuario.", "success", false));
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(Map.of("message", "Error al subir la foto de perfil: " + e.getMessage(), "success", false));
+		}
+	}
+
 	@GetMapping("/showAllEncrypted")
 	public ResponseEntity<List<UserDTO>> showAllEncrypted() {
 		List<UserDTO> users = userServ.getAll();

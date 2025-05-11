@@ -64,16 +64,27 @@ export class MenuComponent implements OnInit {
     );
   }
 
-  onFileSelected(event: any): void {
-    this.profilePicture = event.target.files[0];
+  actualizarFotoPerfil(): void {
+    if (this.profilePicture && this.id) {
+      this.authService.actualizarFotoDePerfil(this.id, this.profilePicture).subscribe({
+        next: (response: any) => {
+          alert(response.message);
+          console.log('Foto de perfil actualizada:', response);
+          this.imagen = this.authService.obtenerUrlArchivo(response.nombreArchivo);
+          this.profilePicture = null;
+        },
+        error: (error: HttpErrorResponse) => {
+          alert(error.error.message || 'Error al actualizar la foto de perfil.');
+          console.error('Error al actualizar la foto de perfil:', error);
+        }
+      });
+    } else {
+      alert('Por favor, selecciona una foto de perfil.');
+    }
   }
 
-  onSubmitProfilePhotoForm(): void {
-    if (this.profilePicture) {
-      console.log('Archivo seleccionado:', this.profilePicture);
-    } else {
-      console.log('No se ha seleccionado ningún archivo.');
-    }
+  onFileSelected(event: any): void {
+    this.profilePicture = event.target.files[0];
   }
 
   update(): void {

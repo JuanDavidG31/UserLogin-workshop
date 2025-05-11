@@ -185,6 +185,31 @@ public class UserService implements CRUDOperation<UserDTO, User> {
 		}
 	}
 
+	@Override
+	public int updateImage(Long id, UserDTO newData) {
+		Optional<User> found = userRepo.findById(id);
+		Optional<User> newFound = userRepo.findByImage(newData.getImage());
+
+		if (found.isPresent() && !newFound.isPresent()) {
+			User temp = found.get();
+
+			if (temp.getImage() != null) {
+				temp.setImage(newData.getImage());
+			}
+
+			userRepo.save(temp);
+			return 0;
+		}
+		if (found.isPresent() && newFound.isPresent()) {
+			return 1;
+		}
+		if (!found.isPresent()) {
+			return 2;
+		} else {
+			return 3;
+		}
+	}
+
 	public UserDTO getById(Long id) {
 		Optional<User> found = userRepo.findById(id);
 		if (found.isPresent()) {
