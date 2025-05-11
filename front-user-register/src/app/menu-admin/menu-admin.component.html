@@ -1,0 +1,109 @@
+<div class="d-flex">
+  <nav id="sidebar" class="d-flex flex-column bg-light border-end p-3">
+    <h5 class="text-center mb-4">Menú</h5>
+    <ul class="nav nav-pills flex-column mb-auto" id="optionsMenu" role="tablist" aria-orientation="vertical">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="logoutLink" type="button" role="tab" aria-controls="logoutSection" aria-selected="false" (click)="logout()">
+          <i class="bi bi-box-arrow-right me-2"></i> Log Out
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="mapLink" data-bs-toggle="pill" data-bs-target="#emptySection" type="button" role="tab" aria-controls="emptySection" aria-selected="false" (click)="traerMapa()">
+          <i class="bi bi-map me-2"></i> Mapa
+
+        </button>
+      </li>
+
+      <li class="nav-item mb-2" role="presentation">
+        <button class="nav-link active" id="profilePhotoLink" data-bs-toggle="pill" data-bs-target="#profilePhotoSection" type="button" role="tab" aria-controls="profilePhotoSection" aria-selected="true">
+          <i class="bi bi-camera-fill me-2"></i> Subir Foto de Perfil
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="changeCredentialsLink" data-bs-toggle="pill" data-bs-target="#updateCredentialsSection" type="button" role="tab" aria-controls="updateCredentialsSection" aria-selected="false">
+          <i class="bi bi-person-lock-fill me-2"></i> Actualizar Datos
+        </button>
+      </li>
+    </ul>
+  </nav>
+
+
+  <main id="content" class="flex-grow-1 d-flex justify-content-center align-items-start">
+
+    <div class="position-absolute profile-photo-container">
+      <div class="rounded-circle border border-primary overflow-hidden">
+        <img [src]="imagen" alt="Foto de perfil" class="img-fluid" />
+      </div>
+      <div class="text-center mt-2">Admin</div>
+    </div>
+
+    <div class="tab-content">
+      <section class="tab-pane fade show active" id="profilePhotoSection" role="tabpanel" aria-labelledby="profilePhotoLink" tabindex="0">
+        <div class="card shadow-sm p-4 mb-5">
+          <h2 class="mb-4 text-center">Subir Foto de Perfil</h2>
+          <div id="uploadProfilePhotoForm" autocomplete="off" novalidate>
+            <div class="mb-3">
+              <label for="profilePicture" class="form-label">Selecciona una imagen</label>
+              <input
+                type="file"
+                class="form-control"
+                id="profilePicture"
+                name="profilePicture"
+                accept="image/*"
+                required
+                (change)="onFileSelected($event)"
+              />
+            </div>
+            <button type="button" class="btn btn-primary w-100" (click)="actualizarFotoPerfil()" [disabled]="!profilePicture">Actualizar Foto</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-pane fade" id="updateCredentialsSection" role="tabpanel" aria-labelledby="changeCredentialsLink" tabindex="0">
+        <div class="card shadow-sm p-4">
+          <h2 class="mb-4 text-center">Actualizar Usuario o Contraseña</h2>
+          <form id="updateUserForm" autocomplete="off" novalidate (ngSubmit)="update()">
+            <div class="mb-3">
+              <label for="updateUsername" class="form-label">Nuevo usuario</label>
+              <input
+                type="text"
+                class="form-control"
+                id="updateUsername"
+                name="updateUsername"
+                placeholder="Nuevo usuario"
+                required
+                [(ngModel)]="updateUsername"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="updatePassword" class="form-label">Nueva Contraseña</label>
+              <input
+                type="password"
+                class="form-control"
+                id="updatePassword"
+                name="updatePassword"
+                placeholder="Nueva contraseña"
+                required
+                minlength="8"
+                [(ngModel)]="updatePassword"
+              />
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Actualizar</button>
+          </form>
+          <div *ngIf="updateError" class="alert alert-danger mt-3">
+            Error al actualizar los datos. Por favor, inténtalo de nuevo.
+          </div>
+          <div *ngIf="updateSuccess" class="alert alert-success mt-3">
+            Datos actualizados correctamente.
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-pane fade" id="emptySection" role="tabpanel" aria-labelledby="mapLink" tabindex="0">
+        <h2 >Esta es tu Dirección</h2>
+        <img [src]="mapa">
+      </section>
+    </div>
+  </main>
+</div>
+
