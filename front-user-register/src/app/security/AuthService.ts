@@ -149,12 +149,13 @@ export class AuthService {
 
   actualizarFotoDePerfil(id: number, archivo: File): Observable<any> {
     const formData = new FormData();
-    formData.append('id', String(id));
-    formData.append('archivo', archivo);
+    formData.append('id', id.toString());
+    formData.append('archivo', archivo, archivo.name);
 
-    return this.http.post(this.apiUrlActualizarFotoPerfil, formData, {
-      headers: this.createAuthHeaders()
-    });
+    const token = this.getToken();
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
+
+    return this.http.put(`${this.apiUrlActualizarFotoPerfil}`, formData, { headers });
   }
 
 

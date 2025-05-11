@@ -21,7 +21,8 @@ export class MenuComponent implements OnInit {
   mapa='';
   address='';
   id:any;
-
+  uploadingPicture: boolean = false;
+  uploadMessage: string = '';
   constructor(private authService: AuthService, private router: Router) { }
 
   traerMapa(): void {
@@ -63,28 +64,67 @@ export class MenuComponent implements OnInit {
       }
     );
   }
+  loadUserData(): void {
+    const decodedToken = this.authService.getDecodedToken();
+    this.currentUsername = decodedToken ? decodedToken.user : null;
 
-  actualizarFotoPerfil(): void {
-    if (this.profilePicture && this.id) {
-      this.authService.actualizarFotoDePerfil(this.id, this.profilePicture).subscribe({
-        next: (response: any) => {
-          alert(response.message);
-          console.log('Foto de perfil actualizada:', response);
-          this.imagen = this.authService.obtenerUrlArchivo(response.nombreArchivo);
-          this.profilePicture = null;
-        },
-        error: (error: HttpErrorResponse) => {
-          alert(error.error.message || 'Error al actualizar la foto de perfil.');
-          console.error('Error al actualizar la foto de perfil:', error);
-        }
-      });
-    } else {
-      alert('Por favor, selecciona una foto de perfil.');
+    if (!this.currentUsername) {
+      console.error('Token inválido o no disponible.');
+      return;
     }
+
+    this.authService.getAllUsers().subscribe(
+      (usuarios) => {
+        const usuarioLogueado = usuarios.find(u => u.user === this.currentUsername);
+        if (usuarioLogueado) {
+          this.image = usuarioLogueado.image;
+          this.imagen = this.authService.obtenerUrlArchivo(this.image);
+          this.address = usuarioLogueado.address;
+          this.id = usuarioLogueado.id;
+        } else {
+          console.warn('Usuario no encontrado en la lista');
+        }
+      },
+      (error) => {
+        console.error('Error al obtener usuarios:', error);
+      }
+    );
+  }
+  actualizarFotoPerfil(): void {
+    if (!this.profilePicture || !this.id) {
+      this.uploadMessage = 'Por favor, selecciona una foto de perfil.';
+      return;
+    }
+
+    this.uploadingPicture = true;
+    this.uploadMessage = 'Subiendo foto...';
+
+    this.authService.actualizarFotoDePerfil(this.id, this.profilePicture).subscribe({
+      next: (response: any) => {
+        this.uploadingPicture = false;
+        this.uploadMessage = response.message;
+        if (response.success) {
+          console.log('Foto de perfil actualizada:', response)
+          this.loadUserData();
+          const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+          if (fileInput) {
+            fileInput.value = '';
+          }
+          this.profilePicture = null;
+        } else {
+          console.error('Error al actualizar la foto de perfil:', response);
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        this.uploadingPicture = false;
+        this.uploadMessage = 'Error al subir la foto de perfil.';
+        console.error('Error al subir la foto de perfil:', error);
+      }
+    });
   }
 
   onFileSelected(event: any): void {
-    this.profilePicture = event.target.files[0];
+    this.profilePicture = event.target.files[0] as File;
   }
 
   update(): void {

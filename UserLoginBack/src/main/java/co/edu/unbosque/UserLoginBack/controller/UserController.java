@@ -59,9 +59,13 @@ public class UserController {
 	public UserController() {
 	}
 
-	@PostMapping(value = "/actualizar-foto-perfil", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<?> actualizarFotoPerfil(@RequestParam Long id,
+	@PutMapping(value = "/actualizar-foto-perfil", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<?> actualizarFotoPerfil(@RequestParam long id,
 			@Parameter(description = "Nueva foto de perfil", required = true, name = "archivo", content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE)) @RequestParam("archivo") MultipartFile archivo) {
+
+		System.out.println(id);
+		System.out.println(archivo);
+
 		if (archivo.isEmpty()) {
 			return ResponseEntity.badRequest()
 					.body(Map.of("message", "Por favor, selecciona una foto de perfil para subir.", "success", false));
