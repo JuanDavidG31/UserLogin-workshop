@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import co.edu.unbosque.UserLoginBack.dto.PaisDTO;
 import co.edu.unbosque.UserLoginBack.dto.UserDTO;
 import co.edu.unbosque.UserLoginBack.model.User;
 import co.edu.unbosque.UserLoginBack.security.JwtUtil;
@@ -62,6 +63,9 @@ public class AuthController {
 	/** Servicio para operaciones relacionadas con usuarios. */
 
 	private final UserService userService;
+	
+	@Autowired
+	private ExternalHTTPRequestHandler externalHttpHandler;
 
 	/**
 	 * Constructor que inicializa las dependencias necesarias para el controlador.
@@ -74,6 +78,10 @@ public class AuthController {
 		this.authenticationManager = authenticationManager;
 		this.jwtUtil = jwtUtil;
 		this.userService = userService;
+	}
+	@GetMapping("/paises")
+	public List<PaisDTO> listarPaises() {
+	    return externalHttpHandler.getAllCountriesList();
 	}
 
 	@Operation(summary = "Subir un archivo")

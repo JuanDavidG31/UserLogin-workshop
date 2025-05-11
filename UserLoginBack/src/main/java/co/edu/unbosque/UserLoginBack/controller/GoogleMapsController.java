@@ -43,9 +43,6 @@ public class GoogleMapsController {
 		JsonObject coordinates = externalHttpHandler.getCoordinatesFromAddress(address);
 		return ResponseEntity.ok(coordinates.toString());
 	}
-	@GetMapping("/paises")
-	public List<PaisDTO> listarPaises() {
-	    return externalHttpHandler.getAllCountriesList();
-	}
+	
 
 }
