@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import co.edu.unbosque.UserLoginBack.dto.UserDTO;
 import co.edu.unbosque.UserLoginBack.service.UserService;
+import co.edu.unbosque.UserLoginBack.util.AESUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -85,20 +87,24 @@ public class UserController {
 	}
 
 	@PutMapping(path = "/update")
-	ResponseEntity<String> updateNew(@RequestParam long id, @RequestParam String newUsername,
+	ResponseEntity<?> updateNew(@RequestParam long id, @RequestParam String newUsername,
 			@RequestParam String newPassword) {
 		UserDTO newUser = new UserDTO(newUsername, newPassword, null, null, null, null, null);
-
 		int status = userServ.updateById(id, newUser);
 
 		if (status == 0) {
-			return new ResponseEntity<>("User updated successfully", HttpStatus.ACCEPTED);
+
+			return ResponseEntity.status(HttpStatus.ACCEPTED)
+					.body(Map.of("message", "User registered successfully", "success", true));
 		} else if (status == 1) {
-			return new ResponseEntity<>("New username already taken", HttpStatus.IM_USED);
+			return ResponseEntity.status(HttpStatus.IM_USED)
+					.body(Map.of("message", "New username already taken", "success", false));
 		} else if (status == 2) {
-			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(Map.of("message", "User not found", "success", false));
 		} else {
-			return new ResponseEntity<>("Error on update", HttpStatus.BAD_REQUEST);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body(Map.of("message", "Error on update", "success", false));
 		}
 
 	}

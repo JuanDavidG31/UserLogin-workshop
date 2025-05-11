@@ -119,31 +119,33 @@ export class AuthService {
     return this.http.post(this.apiUrlRegister, userData, { params });
   }
 
-  updateUser(user?: string, password?: string): Observable<any> {
+  updateUser(updateData: {id?: number; user?: string; password?: string }): Observable<any> {
     const token = this.getToken();
     if (!token) {
-      console.error('No token available for update.');
       return new Observable(observer => observer.error('No token available'));
     }
 
     const userId = this.getUserId();
     if (!userId) {
-      console.error('No user ID found in the token.');
       return new Observable(observer => observer.error('No user ID found in token'));
     }
 
-    let params = new HttpParams().set('id', userId);
-    if (user) {
-      params = params.set('newUsername', user);
-    }
-    if (password) {
-      params = params.set('newPassword', password);
+    let params = new HttpParams();
+    if (updateData.id) {
+      params = params.set('id', updateData.id);
     }
 
-    const headers = this.createAuthHeaders();
+    if (updateData.user) {
+      params = params.set('newUsername', updateData.user);
+    }
 
-    return this.http.put(`${this.apiUrlUpdate}`, {}, { headers, params });
+    if (updateData.password) {
+      params = params.set('newPassword', updateData.password);
+    }
+
+    return this.http.put(`${this.apiUrlUpdate}`, null, { params, headers: this.createAuthHeaders() });
   }
+
 
   logout(): void {
     this.removeToken();

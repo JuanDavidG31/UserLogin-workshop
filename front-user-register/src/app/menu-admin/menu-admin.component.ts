@@ -21,6 +21,7 @@ export class MenuAdminComponent implements OnInit{
   imagen='';
   mapa='';
   address='';
+  id:any;
 
   constructor(private authService: AuthService, private router: Router) { }
 
@@ -53,6 +54,7 @@ export class MenuAdminComponent implements OnInit{
           this.image = usuarioLogueado.image;
           this.imagen = this.authService.obtenerUrlArchivo(this.image);
           this.address = usuarioLogueado.address;
+          this.id = usuarioLogueado.id;
         } else {
           console.warn('Usuario no encontrado en la lista');
         }
@@ -75,11 +77,15 @@ export class MenuAdminComponent implements OnInit{
     }
   }
 
-  onSubmitUpdateUserForm(): void {
+  update(): void {
     this.updateError = false;
     this.updateSuccess = false;
 
     const updateData: any = {};
+    if (this.id) {
+      updateData.id = this.id;
+    }
+
     if (this.updateUsername) {
       updateData.user = this.updateUsername;
     }
@@ -88,19 +94,21 @@ export class MenuAdminComponent implements OnInit{
     }
 
     if (Object.keys(updateData).length > 0) {
-      this.authService.updateUser(this.updateUsername, this.updatePassword)
-        .subscribe(
-          (response) => {
+      this.authService.updateUser(updateData)
+        .subscribe({
+          next: (response: any) => {
+            alert('Usuario Actualizado con éxito');
             console.log('Usuario actualizado correctamente:', response);
             this.updateSuccess = true;
             this.resetUpdateForm();
           },
-          (error: HttpErrorResponse) => {
+          error: (error: HttpErrorResponse) => {
             console.error('Error al actualizar usuario:', error);
             this.updateError = true;
-          }
-        );
-    } else {
+          },
+        });
+    }
+    else {
       this.updateError = true;
       console.warn('No se proporcionaron datos para actualizar.');
     }

@@ -160,7 +160,7 @@ public class UserService implements CRUDOperation<UserDTO, User> {
 		if (found.isPresent() && !newFound.isPresent()) {
 			User temp = found.get();
 			if (temp.getUser() != null) {
-				temp.setUser(newData.getUser());
+				temp.setUser(AESUtil.encrypt(newData.getUser()));
 			}
 			if (temp.getPassword() != null) {
 				temp.setPassword(passwordEncoder.encode(newData.getPassword()));
