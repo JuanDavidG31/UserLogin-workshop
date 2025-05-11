@@ -51,6 +51,14 @@ public class UserService implements CRUDOperation<UserDTO, User> {
 
 			return 1;
 		}
+
+		if (!isValidPassword(entity.getPassword())) {
+			throw new IllegalArgumentException("La contraseña no cumple con el estándar "
+					+ "(mínimo 8 caracteres, al menos una letra minúscula, " + "al menos una letra mayúscula, "
+					+ "al menos un número y al menos un símbolo que no sea < > :).");
+
+		}
+
 		if (findUsernameAlreadyTaken(entity)) {
 
 			return 1;
@@ -72,6 +80,29 @@ public class UserService implements CRUDOperation<UserDTO, User> {
 			userRepo.save(entity);
 			return 0;
 		}
+	}
+
+	private boolean isValidPassword(String password) {
+		if (password.length() < 8) {
+			return false;
+		}
+		boolean hasLower = false;
+		boolean hasUpper = false;
+		boolean hasDigit = false;
+		boolean hasSymbol = false;
+
+		for (char ch : password.toCharArray()) {
+			if (Character.isLowerCase(ch))
+				hasLower = true;
+			else if (Character.isUpperCase(ch))
+				hasUpper = true;
+			else if (Character.isDigit(ch))
+				hasDigit = true;
+			else if ("<>:".indexOf(ch) == -1 && !Character.isLetterOrDigit(ch))
+				hasSymbol = true;
+		}
+
+		return hasLower && hasUpper && hasDigit && hasSymbol;
 	}
 
 	@Override
@@ -106,11 +137,26 @@ public class UserService implements CRUDOperation<UserDTO, User> {
 	@Override
 	public String decrypt(UserDTO data) {
 		User entity = modelMapper.map(data, User.class);
-		entity.setName(AESUtil.decrypt(entity.getName()));
-		entity.setCedula(AESUtil.decrypt(entity.getCedula()));
-		entity.setCoutry(AESUtil.decrypt(entity.getCoutry()));
-		entity.setAddress(AESUtil.decrypt(entity.getAddress()));
-		entity.setUser(AESUtil.decrypt(entity.getUser()));
+		if (entity.getUser() != null) {
+			entity.setUser(AESUtil.decrypt(entity.getUser()));
+
+		}
+		if (entity.getName() != null) {
+			entity.setName(AESUtil.decrypt(entity.getName()));
+
+		}
+		if (entity.getCedula() != null) {
+			entity.setCedula(AESUtil.decrypt(entity.getCedula()));
+
+		}
+		if (entity.getCoutry() != null) {
+			entity.setCoutry(AESUtil.decrypt(entity.getCoutry()));
+
+		}
+		if (entity.getAddress() != null) {
+			entity.setAddress(AESUtil.decrypt(entity.getAddress()));
+
+		}
 		return null;
 	}
 

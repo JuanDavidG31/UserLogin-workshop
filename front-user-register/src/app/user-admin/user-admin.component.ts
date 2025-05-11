@@ -44,21 +44,6 @@ export class UserAdminComponent {
     });
   }
 
-  traerMapa(): string {
-    this.authService.mostrarMapa('portal 80').subscribe({
-      next: (respuesta: string) => {
-        this.map = respuesta;
-        console.log('Link recibido:', this.map);
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('Error al obtener el link:', error);
-      }
-    });
-    return this.map;
-  }
-
-
-
   iniciarSesion() {
     this.loginError = false;
     this.authService.login({ user: this.user, password: this.password })
